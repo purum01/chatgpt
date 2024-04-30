@@ -1,0 +1,75 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            <code id="source-code">
+다음에 제시된 조건에 따라 파이썬 코드를 생성해줘
+
+# 조건
+1. 현재 작업 폴더 하위의 data 폴더에는 CSV 파일들이 있어.
+2. data폴더의 CSV 파일은 수강생명, 수강금액, 상담날짜, 강좌명에 대한 데이터가 있어
+3. CSV 파일에는 한글이 포함되어 있어
+4. data 폴더의 모든 CSV 파일의 수강금액 합계를 구해줘
+5. 합계를 구한후 화면에 "년매출액" 글자와 함계 합게를 출력해줘                 
+</code>            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import os
+import pandas as pd
+
+# 현재 작업 폴더 경로를 가져옵니다.
+current_directory = os.getcwd()
+
+# data 폴더의 경로를 만듭니다.
+data_folder = os.path.join(current_directory, 'data')
+
+# data 폴더에 있는 모든 CSV 파일을 읽어들입니다.
+files = [f for f in os.listdir(data_folder) if f.endswith('.csv')]
+
+# 년매출액의 합계를 저장할 변수를 초기화합니다.
+total_annual_revenue = 0
+
+# 각 파일에 대해 수강금액의 합계를 계산합니다.
+for file in files:
+    file_path = os.path.join(data_folder, file)
+    
+    # CSV 파일을 DataFrame으로 읽어들입니다.
+    try:
+        df = pd.read_csv(file_path, encoding='utf-8')
+    except UnicodeDecodeError:
+        df = pd.read_csv(file_path, encoding='cp949')  # 대안으로 cp949 인코딩 시도
+
+    # 수강금액 열의 합계를 계산합니다.
+    monthly_revenue = df['수강금액'].sum()
+    
+    # 년매출액의 합계에 더합니다.
+    total_annual_revenue += monthly_revenue
+
+# 화면에 년매출액의 합계를 출력합니다.
+print(f"년매출액의 합계: {total_annual_revenue}")
+                
+            </code>
+        </div>
+    </div>
+</div>
+
+<script src="content.js"></script>
+

@@ -1,0 +1,97 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            <code id="source-code">
+위 코드를 streamlit 을 활용하여 다음과 같이 변경해주세요
+1.  customers_file_path , template_file_path  변수값을 입력 받음
+2. 버튼을 클릭하면  docx 파일들이 생성됨
+3. 입력받은 디렉터리 경로는 현재 스크립트 파일을 기준으로 하위에 있음
+3. docx 파일들이 저장되는 위치는 현재 스크립트 파일이 있는 디렉토리의 하위에 위치한 output 임      
+</code>            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import os
+import docx
+import streamlit as st
+
+# Streamlit 앱의 제목 설정
+st.title('고객 편지 생성')
+
+# 사용자로부터 입력받은 파일 경로
+customers_file = st.text_input('고객 목록 파일 경로:', 'data\\customers.txt')
+template_file = st.text_input('템플릿 파일 경로:', 'data\\template.docx')
+
+
+base_path = os.path.abspath(os.path.dirname(__file__))
+customers_file_path =os.path.join(base_path, customers_file)
+template_file_path =os.path.join(base_path, template_file)
+output_folder = os.path.join(base_path, 'output')
+
+# 만약 output 폴더가 없다면 생성
+if not os.path.exists(output_folder):
+os.makedirs(output_folder)
+
+def generate_letter(company, receiver, number, sender, title, template_path):
+# 템플릿 파일을 불러옴
+doc = docx.Document(template_path)
+
+# 템플릿 내용을 대체
+for paragraph in doc.paragraphs:
+    for run in paragraph.runs:
+        if "{company}" in run.text:
+            run.text = run.text.replace("{company}", company)
+        if "{number}" in run.text:
+            run.text = run.text.replace("{number}", number)
+        if "{receiver}" in run.text:
+            run.text = run.text.replace("{receiver}", receiver)
+        if "{sender}" in run.text:
+            run.text = run.text.replace("{sender}", sender)
+        if "{title}" in run.text:
+            run.text = run.text.replace("{title}", title)
+
+return doc
+
+# 버튼을 클릭하면 docx 파일들이 생성됨
+if st.button('편지 생성 시작'):
+try:
+    with open(customers_file_path, "r", encoding="utf-8") as customers_file:
+        customers_list = [line.strip() for line in customers_file.readlines()]
+
+    for idx, customer in enumerate(customers_list, start=1):
+        serial_number = f"{idx:02d}"
+        letter = generate_letter("주식회사 파이썬", customer, f"2023-12-A{serial_number}",
+                                    "주식회사 파이썬", "사내 워크숍 진행으로 인한 업무 안내", template_file_path)
+        output_file_path = os.path.join(output_folder, f"{customer}_letter.docx")
+        letter.save(output_file_path)
+
+    st.success(f'편지 파일들이 성공적으로 생성되어 {output_folder}에 저장되었습니다.')
+except Exception as e:
+    st.error(f'오류가 발생했습니다: {e}')
+
+                
+            </code>
+        </div>
+    </div>
+</div>
+
+<script src="content.js"></script>
+

@@ -1,0 +1,70 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            <code id="source-code">
+다음에 제시된 조건에 따라 파이썬 코드를 생성해줘
+
+# 조건
+1. 현재 작업 폴더 하위의 data 폴더에는 CSV 파일들이 작업 대상이야
+2. 각 파일들의 수강금액 합계를 출력해
+3. 마지막에는 모든 파일들의 수강금액 총합계를 출력해              
+</code>            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import os
+import pandas as pd
+
+# data 폴더의 경로 설정
+data_folder = 'data'
+
+# 총 수강금액 초기화
+total_amount = 0
+
+# data 폴더 내의 모든 파일을 순회
+for filename in os.listdir(data_folder):
+    # 파일이 CSV 형식인 경우만 처리
+    if filename.endswith('.csv'):
+        # 파일 경로 구성
+        file_path = os.path.join(data_folder, filename)
+        
+        # CSV 파일 읽기, 인코딩 문제가 발생할 수 있으므로 'utf-8'로 설정
+        try:
+            df = pd.read_csv(file_path, encoding='utf-8')
+        except UnicodeDecodeError:
+            df = pd.read_csv(file_path, encoding='cp949')  # 대안으로 cp949 인코딩 사용
+        
+        # 해당 파일의 수강금액 합계 계산
+        file_amount = df['수강금액'].sum()
+        total_amount += file_amount
+        
+        # 각 파일의 수강금액 합계 출력
+        print(f"{filename}의 수강금액 합계: {file_amount}")
+
+# 모든 파일의 총합계 출력
+print(f"모든 파일의 수강금액 총합계: {total_amount}")
+            </code>
+        </div>
+    </div>
+</div>
+
+<script src="content.js"></script>
+

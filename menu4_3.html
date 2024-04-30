@@ -1,0 +1,495 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Text
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+
+# 타이틀 적용 예시
+st.title('이것은 타이틀 입니다')
+
+# 특수 이모티콘 삽입 예시
+# emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
+st.title('스마일 :sunglasses:')
+
+# Header 적용
+st.header('헤더를 입력할 수 있어요! :sparkles:')
+
+# Subheader 적용str
+st.subheader('이것은 subheader 입니다')
+
+# 캡션 적용
+st.caption('캡션을 한 번 넣어 봤습니다')
+
+# 코드 표시
+sample_code = '''
+def function():
+    print('hello, world')
+'''
+st.code(sample_code, language="python")
+
+# 일반 텍스트
+st.text('일반적인 텍스트를 입력해 보았습니다.')
+
+# 마크다운 문법 지원
+st.markdown('streamlit은 **마크다운 문법을 지원**합니다.')
+# 컬러코드: blue, green, orange, red, violet
+st.markdown("텍스트의 색상을 :green[초록색]으로, 그리고 **:blue[파란색]** 볼트체로 설정할 수 있습니다.")
+st.markdown(":green[$\sqrt{x^2+y^2}=1$] 와 같이 latex 문법의 수식 표현도 가능합니다 :pencil:")
+
+# LaTex 수식 지원
+st.latex(r'\sqrt{x^2+y^2}=1')
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Data
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import pandas as pd
+import numpy as np
+
+
+st.title('데이터프레임 튜토리얼')
+
+# DataFrame 생성
+dataframe = pd.DataFrame({
+    'first column': [1, 2, 3, 4],
+    'second column': [10, 20, 30, 40],
+})
+
+# DataFrame
+# use_container_width 기능은 데이터프레임을 컨테이너 크기에 확장할 때 사용합니다. (True/False)
+st.dataframe(dataframe, use_container_width=False)
+
+
+# 테이블(static)
+# DataFrame과는 다르게 interactive 한 UI 를 제공하지 않습니다.
+st.table(dataframe)
+
+
+# # 메트릭
+st.metric(label="온도", value="10°C", delta="1.2°C")
+st.metric(label="삼성전자", value="61,000 원", delta="-1,200 원")
+
+# 컬럼으로 영역을 나누어 표기한 경우
+col1, col2, col3 = st.columns(3)
+col1.metric(label="달러USD", value="1,228 원", delta="-12.00 원")
+col2.metric(label="일본JPY(100엔)", value="958.63 원", delta="-7.44 원")
+col3.metric(label="유럽연합EUR", value="1,335.82 원", delta="11.44 원")                
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Covid with Streamlit
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 streamlit을  사용한 코드를 변경해주세요.
+1. coivd 디렉터리는 사용자 입력을 받음
+2. 입력받은 디렉터리 경로는 현재 스크립트 파일을 기준으로 하위에 있음
+"""                
+import pandas as pd
+import os
+import glob
+import streamlit as st
+
+# Streamlit 앱의 제목 설정
+st.title('2020년 Covid 현황')
+
+# 사용자로부터 디렉터리 경로 입력 받기
+input_folder = st.text_input('디렉터리 경로 입력:', 'covid')
+
+# 스크립트 파일이 위치한 디렉토리를 기준으로 입력받은 경로 조합
+base_path = os.path.abspath(os.path.dirname(__file__))
+folder_path = os.path.join(base_path, input_folder)
+
+# 경로 확인 버튼
+if st.button('데이터 처리 및 저장'):
+    if not os.path.exists(folder_path):
+        st.error('입력한 경로가 존재하지 않습니다. 경로를 확인해주세요.')
+    else:
+        # covid 디렉터리에서 모든 csv 파일 목록을 가져옴
+        csv_files = glob.glob(os.path.join(folder_path, '*.csv'))
+
+        # 병합된 데이터를 저장할 빈 데이터프레임 생성
+        merged_df = pd.DataFrame()
+
+        for file in csv_files:
+            # 파일에서 'Country_Region', 'Confirmed' 컬럼만 읽어옴
+            df = pd.read_csv(file, usecols=['Country_Region', 'Confirmed'])
+            
+            # 'Country_Region'별로 그룹핑하고 'Confirmed'의 합계를 구함
+            grouped_df = df.groupby('Country_Region', as_index=False).sum()
+            
+            # 파일 이름에서 확장자를 제거하고 '-'를 '/'로 변경함
+            column_name = os.path.basename(file).replace('.csv', '').replace('-', '/')
+            # 'Confirmed' 컬럼 이름을 변경함
+            grouped_df.columns = ['Country_Region', column_name]
+            
+            # 병합된 데이터프레임에 현재 데이터프레임을 병합함
+            if merged_df.empty:
+                merged_df = grouped_df
+            else:
+                merged_df = pd.merge(merged_df, grouped_df, on='Country_Region', how='outer')
+
+        # NaN 값을 0으로 채움
+        merged_df.fillna(0, inplace=True)
+
+        # 병합된 데이터를 화면에 표시
+        st.dataframe(merged_df)
+        merged_df.to_excel('2020_Covid_Status.xlsx', index=False)                   
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Basic UI
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import pandas as pd
+from datetime import datetime as dt
+import datetime
+
+# 버튼 클릭
+button = st.button('버튼을 눌러보세요')
+
+if button:
+    st.write(':blue[버튼]이 눌렸습니다 :sparkles:')
+
+
+# 파일 다운로드 버튼
+# 샘플 데이터 생성
+dataframe = pd.DataFrame({
+    'first column': [1, 2, 3, 4],
+    'second column': [10, 20, 30, 40],
+})
+
+# 다운로드 버튼 연결
+st.download_button(
+    label='CSV로 다운로드',
+    data=dataframe.to_csv(), 
+    file_name='sample.csv', 
+    mime='text/csv'
+)
+
+# 체크 박스
+agree = st.checkbox('동의 하십니까?')
+
+if agree:
+    st.write('동의 해주셔서 감사합니다 :100:')
+
+# 라디오 선택 버튼
+mbti = st.radio(
+    '당신의 MBTI는 무엇입니까?',
+    ('ISTJ', 'ENFP', '선택지 없음'))
+
+if mbti == 'ISTJ':
+    st.write('당신은 :blue[현실주의자] 이시네요')
+elif mbti == 'ENFP':
+    st.write('당신은 :green[활동가] 이시네요')
+else:
+    st.write("당신에 대해 :red[알고 싶어요]:grey_exclamation:")
+
+# 선택 박스
+mbti = st.selectbox(
+    '당신의 MBTI는 무엇입니까?',
+    ('ISTJ', 'ENFP', '선택지 없음'), 
+    index=2
+)
+
+if mbti == 'ISTJ':
+    st.write('당신은 :blue[현실주의자] 이시네요')
+elif mbti == 'ENFP':
+    st.write('당신은 :green[활동가] 이시네요')
+else:
+    st.write("당신에 대해 :red[알고 싶어요]:grey_exclamation:")
+
+# 다중 선택 박스
+options = st.multiselect(
+    '당신이 좋아하는 과일은 뭔가요?',
+    ['망고', '오렌지', '사과', '바나나'],
+    ['망고', '오렌지'])
+
+st.write(f'당신의 선택은: :red[{options}] 입니다.')
+
+
+# 슬라이더
+values = st.slider(
+    '범위의 값을 다음과 같이 지정할 수 있어요:sparkles:',
+    0.0, 100.0, (25.0, 75.0))
+st.write('선택 범위:', values)
+
+start_time = st.slider(
+    "언제 약속을 잡는 것이 좋을까요?",
+    min_value=dt(2020, 1, 1, 0, 0), 
+    max_value=dt(2020, 1, 7, 23, 0),
+    value=dt(2020, 1, 3, 12, 0),
+    step=datetime.timedelta(hours=1),
+    format="MM/DD/YY - HH:mm")
+st.write("선택한 약속 시간:", start_time)
+
+
+# 텍스트 입력
+title = st.text_input(
+    label='가고 싶은 여행지가 있나요?', 
+    placeholder='여행지를 입력해 주세요'
+)
+st.write(f'당신이 선택한 여행지: :violet[{title}]')
+
+# 숫자 입력
+number = st.number_input(
+    label='나이를 입력해 주세요.', 
+    min_value=10, 
+    max_value=100, 
+    value=30,
+    step=5
+)
+st.write('당신이 입력하신 나이는:  ', number)
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Lotto
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import random
+import datetime
+
+st.title(':sparkles:로또 생성기:sparkles:')
+
+def generate_lotto():
+    lotto = set()
+
+    while len(lotto) < 6:
+        number = random.randint(1, 46)
+        lotto.add(number)
+
+    lotto = list(lotto)
+    lotto.sort() 
+    return lotto
+
+button = st.button('로또를 생성해 주세요!')
+
+if button:
+    for i in range(1, 6):
+        st.subheader(f'{i}. 행운의 번호: :green[{generate_lotto()}]')
+    st.write(f"생성된 시각: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
+            </code>
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Chart
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# 한글 폰트 설정
+plt.rcParams['font.family'] = "NanumGothic"
+plt.rcParams['axes.unicode_minus'] = False
+
+
+# DataFrame 생성
+data = pd.DataFrame({
+    '이름': ['영식', '철수', '영희'],
+    '나이': [22, 31, 25],
+    '몸무게': [75.5, 80.2, 55.1]
+})
+
+st.dataframe(data, use_container_width=True)
+
+fig, ax = plt.subplots()
+ax.bar(data['이름'], data['나이'])
+st.pyplot(fig)
+
+barplot = sns.barplot(x='이름', y='나이', data=data, ax=ax, palette='Set2')
+fig = barplot.get_figure()
+
+st.pyplot(fig)
+
+#############
+
+labels = ['G1', 'G2', 'G3', 'G4', 'G5']
+men_means = [20, 35, 30, 35, 27]
+women_means = [25, 32, 34, 20, 25]
+men_std = [2, 3, 4, 1, 2]
+women_std = [3, 5, 2, 3, 3]
+width = 0.35       # the width of the bars: can also be len(x) sequence
+
+fig, ax = plt.subplots()
+
+ax.bar(labels, men_means, width, yerr=men_std, label='Men')
+ax.bar(labels, women_means, width, yerr=women_std, bottom=men_means, label='Women')
+
+ax.set_ylabel('Scores')
+ax.set_title('Scores by group and gender')
+ax.legend()
+
+st.pyplot(fig)
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            File
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import pandas as pd
+import time
+
+# 파일 업로드 버튼 (업로드 기능)
+file = st.file_uploader("파일 선택(csv or excel)", type=['csv', 'xls', 'xlsx'])
+
+time.sleep(3)
+
+# Excel or CSV 확장자를 구분하여 출력하는 경우
+if file is not None:
+    ext = file.name.split('.')[-1]
+    if ext == 'csv':
+        # 파일 읽기
+        df = pd.read_csv(file)
+        # 출력
+        st.dataframe(df)
+    elif 'xls' in ext:
+        # 엑셀 로드
+        df = pd.read_excel(file, engine='openpyxl')
+        # 출력
+        st.dataframe(df)                
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Stock Chart
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import FinanceDataReader as fdr
+import datetime
+
+# Finance Data Reader
+# https://github.com/financedata-org/FinanceDataReader
+
+date = st.date_input(
+    "조회 시작일을 선택해 주세요",
+    datetime.datetime(2024, 1, 1)
+)
+
+code = st.text_input(
+    '종목코드', 
+    value='',
+    placeholder='종목코드를 입력해 주세요'
+)
+
+if code and date:
+    df = fdr.DataReader(code, date)
+    data = df.sort_index(ascending=True).loc[:, 'Close']
+    st.line_chart(data)                
+            </code>
+        </div>
+    </div>
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Stock Chart2
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import streamlit as st
+import FinanceDataReader as fdr
+import datetime
+import time
+
+# Finance Data Reader
+# https://github.com/financedata-org/FinanceDataReader
+
+st.title('종목 차트 검색')
+
+with st.sidebar:
+    date = st.date_input(
+        "조회 시작일을 선택해 주세요",
+        datetime.datetime(2024, 1, 1)
+    )
+
+    code = st.text_input(
+        '종목코드', 
+        value='',
+        placeholder='종목코드를 입력해 주세요'
+    )
+
+if code and date:
+    df = fdr.DataReader(code, date)
+    data = df.sort_index(ascending=True).loc[:, 'Close']
+
+    tab1, tab2 = st.tabs(['차트', '데이터'])
+
+    with tab1:    
+        st.line_chart(data)
+
+    with tab2:
+        st.dataframe(df.sort_index(ascending=False))
+
+    with st.expander('컬럼 설명'):
+        st.markdown('''
+        - Open: 시가
+        - High: 고가
+        - Low: 저가
+        - Close: 종가
+        - Adj Close: 수정 종가
+        - Volumn: 거래량
+        ''')
+                
+            </code>
+        </div>
+    </div>
+    
+    
+</div>
+
+<script src="content.js"></script>
+

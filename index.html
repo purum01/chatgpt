@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>파이썬</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    .container {
+        display: flex;
+        height: 100%;
+    }
+    .side-menu {
+        width: 15%;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+    .content {
+        width: 75%;
+        padding: 20px;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+    #menu > li:hover {
+        font-weight: bold;
+        background-color: gray;
+    }
+    .nested {
+        margin-left: 20px;
+        display: none;
+    }
+    .nested > li:hover {
+        font-weight: bold;
+        color:white;
+    }
+    .active {
+        display: block;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet"  href="style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+</head>
+<body>
+
+<div class="container">
+    <div class="side-menu">
+        <ul id="menu">
+            <li id="menu1" onclick="toggleNested(this)">1. 시작하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu1_1');">개발환경 구축하기</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu1_2');">ChatGPT</li>
+                </ul>
+            </li>
+            <li id="menu2" onclick="toggleNested(this)">2. 파일 정리하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu2_1');">PDF 파일 생성하기</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu2_2');">파일 월별 정리하기</li>
+                </ul>
+            </li>
+                <li id ="menu3" onclick="toggleNested(this)">3. 파일 합치기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu3_1');">연간 총합계 산출하기</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu3_2');">월별 및 연간 데이터 관리</li>
+                </ul>
+            </li>
+            
+            <li id="menu4" onclick="toggleNested(this)">4. Streamlit 활용하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu4_1');">팬데믹 데이터 병합 및 분석</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu4_2');">Streamlit 사용</li>
+                    <li onclick="event.stopPropagation(); showContent('menu4_3');">Streamlit Develop</li>
+                </ul>            
+            </li>
+            <li id="menu5" onclick="toggleNested(this)">5. 워드 다루기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu5_1');">공문 자동생성</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu5_2');">Using Streamlit </li>                        
+                </ul>            
+            </li>
+            <li id="menu6" onclick="toggleNested(this)">6. PDF 정보 추출하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu6_1');">계약 금액 추출</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu6_2');">계약자 정보 추출</li>
+                    <li onclick="event.stopPropagation(); showContent('menu6_3');">Using Streamlit</li>
+                </ul>            
+            </li>
+            <li id="menu7" onclick="toggleNested(this)">7. 이메일 자동화 시스템 구축
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu7_1');">이메일 자동화 1 </li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu7_2');">이메일 자동화 2</li>
+                    <li onclick="event.stopPropagation(); showContent('menu7_3');">이메일 자동화 3</li>
+                </ul>            
+            </li>
+            <li id="menu8" onclick="toggleNested(this)">8. OpenAI API
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu8_1');">OpenAI API 준비</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu8_2');">OpenAI API 사용</li>
+                    <li onclick="event.stopPropagation(); showContent('menu8_3');">회의록 자동 요약</li>
+                </ul>             
+            </li>
+            <li id="menu9" onclick="event.stopPropagation(); showContent('menu9_1')">9. 광고문구 자동 생성하기</li>
+
+            <li id="menu10" onclick="toggleNested(this)">10. 유튜브 내용 요약하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu10_1');">LangChain 사용I</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu10_2');">Youtube 내용 요약</li>
+                    <li onclick="event.stopPropagation(); showContent('menu10_3');">Using Streamlit</li>
+                </ul>            
+            </li>
+            <li id="menu11" onclick="toggleNested(this)">11. PDF 기반 답변하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu11_1')">Embedding</li>
+                    <li onclick="event.stopPropagation(); showContent('menu11_2')">PDF 추출</li>
+                    <li onclick="event.stopPropagation(); showContent('menu11_3');">Using Streamlit</li>
+                </ul>            
+            </li>
+            <li id="menu12" onclick="toggleNested(this)">12. 음성 비서 프로그램
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu12_1')">문자와 음성 변환</li>
+                    <li onclick="event.stopPropagation(); showContent('menu12_2')">Using Streamlit</li>
+                </ul>            
+            </li>
+
+
+        </ul>
+    </div>
+    <div class="content" id="content">
+        <img src = "logo.webp">
+    </div>
+</div>
+
+<script>
+function showContent(menu) {
+    var filePath = menu + ".html"; // 예: 'menu1.html'
+    console.log(filePath)
+
+    // jQuery의 load 메소드를 사용하여 외부 HTML 파일의 내용을 불러옵니다.
+    $("#content").load(filePath, function(response, status, xhr) {
+        if (status == "error") {
+            // 파일 로드 실패 시 처리
+            var msg = "<p>죄송합니다. 오류가 발생했습니다: </p>";
+            msg += "<p>" + xhr.status + " " + xhr.statusText + "</p>";  
+            $("#content").html(msg);
+        }
+    });
+
+}
+
+function toggleNested(element) {
+    if (element.children.length > 0) {
+        element.children[0].classList.toggle("active");
+    }
+}
+</script>
+
+</body>
+</html>

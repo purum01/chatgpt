@@ -1,0 +1,106 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            STEP7
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 attachment_file 에 값이 없어도 동작되도록 수정해주세요
+"""         
+import streamlit as st
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+
+# SMTP 서버 설정 (예: naver)
+smtp_server = "smtp.naver.com"
+smtp_port = 587
+
+# 스트림릿 타이틀
+st.title('이메일 발송 애플리케이션')
+
+# 파일 업로드 섹션
+email_file = st.file_uploader("이메일 목록 엑셀 파일을 업로드하세요 (Email, Name 컬럼 필요)", type=['xlsx'])
+text_file = st.file_uploader("이메일 본문 텍스트 파일 업로드", type=['txt'])
+attachment_file = st.file_uploader("첨부 파일 업로드 (선택사항)", type=['xlsx', 'docx', 'pdf'])
+
+# 사용자 이메일과 패스워드 입력
+sender_email = st.text_input("송신자 이메일 주소:")
+sender_password = st.text_input("송신자 비밀번호:", type="password")
+
+# 이메일 전송 버튼
+send_email = st.button("이메일 보내기")
+
+if send_email:
+    if email_file and text_file and sender_email and sender_password:
+        try:
+            # 이메일 목록 읽기
+            email_df = pd.read_excel(email_file)
+            # 본문 텍스트 읽기
+            text_body = str(text_file.getvalue(), 'utf-8')
+
+            # SMTP 서버 연결
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(sender_email, sender_password)
+
+            # 이메일 전송
+            for idx, row in email_df.iterrows():
+                message = MIMEMultipart()
+                message["From"] = sender_email
+                message["To"] = row['Email']
+                message["Subject"] = "신간 안내"
+
+                # 메일 본문 설정
+                body = text_body.replace('{name}', row['Name'])
+                message.attach(MIMEText(body, "plain", "utf-8"))
+
+                # 첨부 파일 추가 (만약 존재한다면)
+                if attachment_file is not None:
+                    attachment = attachment_file.read()
+                    part = MIMEApplication(attachment, Name="첨부파일")
+                    part['Content-Disposition'] = 'attachment; filename="{}"'.format(attachment_file.name)
+                    message.attach(part)
+
+                # 이메일 발송
+                server.sendmail(sender_email, row['Email'], message.as_string())
+
+            st.success("이메일이 성공적으로 발송되었습니다.")
+            server.quit()
+
+        except Exception as e:
+            st.error(f"오류가 발생했습니다: {e}")
+
+    else:
+        st.error("모든 필드를 채워주세요!")
+
+            </code>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<script src="content.js"></script>
+

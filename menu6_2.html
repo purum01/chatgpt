@@ -1,0 +1,67 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            <code id="source-code">
+PDF 파일에서  '주 소:'와  '회 사 명:'와  '대 표 자:'와  '연 락 처:' 글자들이 들어었는 모든 줄들을 추출해줘
+            </code>            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import PyPDF2
+
+pdf_path = "data/sample1.pdf"
+
+def extract_text_from_pdf(pdf_path):
+    text_lines = []
+    with open(pdf_path, "rb") as pdf_file:
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        for page_number in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_number]
+            text_lines.extend(page.extract_text().splitlines())
+    return text_lines
+
+def extract_information(lines):
+    relevant_information = []
+    keywords = ['주 소:', '회 사 명:', '대 표 자:', '연 락 처:']
+    
+    for line in lines:
+        for keyword in keywords:
+            if keyword in line:
+                relevant_information.append(line.strip())
+    
+    return relevant_information
+
+# PDF 파일에서 텍스트 추출
+text_lines = extract_text_from_pdf(pdf_path)
+
+# 주소, 회사명, 대표자, 연락처 등을 추출
+relevant_information = extract_information(text_lines)
+
+# 결과 출력
+for info in relevant_information:
+    print(info)                
+            </code>
+        </div>
+    </div>
+</div>
+
+<script src="content.js"></script>
+

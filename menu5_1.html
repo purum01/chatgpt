@@ -1,0 +1,105 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            <code id="source-code">
+"data\\customers.txt" 파일에는 고객사 명단이 있어.고객사 목록만큼 공문을 작성하려고 해
+작성할 공문 템플릿은 "data\\template.docx" 이야
+template.docx 템플릿에서 대체할 내용은 다음과 같아.
+{company} 는 "주식회사 파이썬" 으로 대체하고
+{number} 는 "2023-12-Axx"  형식으로 하고 xx 부분에 01부터 시작해서 1씩 증가되는 일련번호를 부여해줘
+{receiver}는 customers.txt에서 읽은 각 고객사 이름을 부여해
+{sender}는 "주식회사 파이썬"으로 하고
+{title}은 "사내 워크숍 진행으로 인한 업무 안내"
+
+위의 내용을 가진 docx 파일을 고객사 수만큼 "output" 폴더에 생성해줘        
+</code>            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import os
+import docx
+
+# 고객사 목록 파일 경로
+customers_file_path = "data\\customers.txt"
+
+# 템플릿 파일 경로
+template_file_path = "data\\template.docx"
+
+# 결과를 저장할 폴더 경로
+output_folder = "output"
+
+# 만약 output 폴더가 없다면 생성
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+def generate_letter(company, receiver, number, sender, title):
+    # 템플릿 파일을 불러옴
+    doc = docx.Document(template_file_path)
+
+    # 템플릿 내용을 대체
+    for paragraph in doc.paragraphs:
+        for run in paragraph.runs:
+            # {company} 대체
+            if "{company}" in run.text:
+                run.text = run.text.replace("{company}", company)
+
+            # {number} 대체
+            if "{number}" in run.text:
+                run.text = run.text.replace("{number}", number)
+
+            # {receiver} 대체
+            if "{receiver}" in run.text:
+                run.text = run.text.replace("{receiver}", receiver)
+
+            # {sender} 대체
+            if "{sender}" in run.text:
+                run.text = run.text.replace("{sender}", sender)
+
+            # {title} 대체
+            if "{title}" in run.text:
+                run.text = run.text.replace("{title}", title)
+
+    return doc
+
+# customers.txt에서 고객사 목록을 읽어옴
+with open(customers_file_path, "r", encoding="utf-8") as customers_file:
+    customers_list = [line.strip() for line in customers_file.readlines()]
+
+# 각 고객사에 대해 편지 생성 및 저장
+for idx, customer in enumerate(customers_list, start=1):
+    # 일련번호 부여 (01, 02, ..., 10, 11, ...)
+    serial_number = f"{idx:02d}"
+
+    # 편지 생성
+    letter = generate_letter("주식회사 파이썬", customer, f"2023-12-A{serial_number}", "주식회사 파이썬", "사내 워크숍 진행으로 인한 업무 안내")
+
+    # 편지를 파일로 저장
+    output_file_path = os.path.join(output_folder, f"{customer}_letter.docx")
+    letter.save(output_file_path)
+
+print("편지 생성이 완료되었습니다.")
+            </code>
+        </div>
+    </div>
+</div>
+
+<script src="content.js"></script>
+
