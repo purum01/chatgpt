@@ -1,0 +1,126 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+<h1 class="title">이메일 자동화 4</h1>
+<div class="faq-container">
+    
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            STEP8
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 다음과 같은 조건으로 변경해주세요
+# 조건
+1. 메일 수신자 이메일은 email_list.xlsx 파일에서 읽어들인 이메일중 다중 선택할 수 있게 한다. 
+2. letter.txt 파일 선택은 위젯으로 처리한다. 또는 직접 메일 본문을 작성할 수 있도록 한다.
+3. book_list.xlsx 파일 선택은 위젯으로 처리 
+"""
+
+import streamlit as st
+import os
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+
+def send_email(sender_email, password, recipient_emails, subject, content, attachment_path=None):
+    # SMTP 서버 설정
+    SMTP_SERVER = "smtp.naver.com"
+    SMTP_PORT = 587
+
+    # 이메일 서버 로그인
+    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    server.starttls()
+    server.login(sender_email, password)
+
+    for recipient_email in recipient_emails:
+        # 이메일 메시지 구성
+        message = MIMEMultipart()
+        message['Subject'] = subject
+        message['From'] = sender_email
+        message['To'] = recipient_email
+
+        # 메일 본문 내용
+        msg_body = MIMEText(content, 'plain', 'utf-8')
+        message.attach(msg_body)
+
+        # 파일 첨부가 가능하다면 파일 첨부
+        if attachment_path and os.path.exists(attachment_path):
+            with open(attachment_path, "rb") as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header(
+                    'Content-Disposition',
+                    'attachment; filename={}'.format(os.path.basename(attachment_path)),
+                )
+                message.attach(part)
+
+        # 이메일 전송
+        server.sendmail(sender_email, recipient_email, message.as_string())
+        st.write(f"이메일을 성공적으로 보냈습니다: {recipient_email}")
+
+    # 이메일 서버 종료
+    server.quit()
+
+# Streamlit 인터페이스
+st.title("이메일 전송 서비스")
+
+# 사용자 인증 정보 입력
+sender_email = st.text_input("송신자 이메일 주소")
+password = st.text_input("비밀번호", type="password")
+
+# 데이터 파일 경로
+excel_path = 'data/email_list.xlsx'
+
+# 메일 본문 선택
+content_option = st.radio("메일 본문 선택 방법", ('텍스트 파일에서 읽기', '직접 작성하기'))
+if content_option == '텍스트 파일에서 읽기':
+    letter_file = st.file_uploader("편지 템플릿 파일 선택", type=['txt'])
+    if letter_file:
+        content = str(letter_file.read(), 'utf-8')
+else:
+    content = st.text_area("메일 본문 직접 작성")
+
+# 첨부 파일 선택
+attachment_file = st.file_uploader("첨부할 파일 선택 (선택 사항)", type=['xlsx'])
+
+if os.path.exists(excel_path):
+    data = pd.read_excel(excel_path, usecols="A,B")  # A열에는 이메일, B열에는 이름
+    options = list(data['Email'])
+    selected_emails = st.multiselect('수신자 이메일 선택', options)
+
+# 메일 전송
+subject = "신간 안내"
+if st.button("이메일 전송"):
+    if sender_email and password and content and selected_emails:
+        send_email(sender_email, password, selected_emails, subject, content, attachment_file.name if attachment_file else None)
+    else:
+        st.error("모든 필수 정보를 입력해 주세요.")
+                
+            </code>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<script src="content.js"></script>
+
