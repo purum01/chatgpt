@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>01</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>08_01</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7555,10 +7555,9 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 환경 변수값 읽기</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"OPENAI_API_KEY"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Open API Key 설정</span>
+<span class="c1"># Window키 &gt; "환경 변수" 검색 &gt; 시스템 환경 변수 편집 &gt; 환경변수 &gt; 사용자 변수에 추가</span>
+<span class="c1"># OPENAI_API_KEY = xxxxxxxxx</span>
 </pre></div>
 </div>
 </div>
@@ -7569,7 +7568,23 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 환경 변수값 읽기</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"OPENAI_API_KEY"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
@@ -7586,19 +7601,18 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-3.5-turbo"</span><span class="p">,</span>
-    <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Tell me how to make a pizza"</span><span class="p">}]</span>
-<span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Chat Completions API</span>
+<span class="c1"># OpenAI API Pricing &gt; Learn about GPT-3.5 Turbo</span>
+<span class="c1"># https://platform.openai.com/docs/guides/text-generation/chat-completions-api</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7606,21 +7620,14 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="s2">"gpt-3.5-turbo"</span><span class="p">,</span>
+    <span class="n">messages</span> <span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You are a helpful assistant."</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Who won the world series in 2020?"</span><span class="p">},</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>ChatCompletion(id='chatcmpl-9JKGxuiXlgy9y10tn3E2jdbytYChJ', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content="Making a pizza from scratch requires a few simple steps. Here's a basic recipe to get you started:\n\nIngredients:\n- 1 1/2 cups warm water (110°F)\n- 1 package active dry yeast\n- 3 1/2 cups all-purpose flour\n- 2 tablespoons olive oil\n- 1 teaspoon salt\n- 1 can of pizza sauce\n- Toppings of your choice (such as cheese, pepperoni, vegetables, etc.)\n\nInstructions:\n1. In a large mixing bowl, dissolve the yeast in the warm water and let it sit for about 5 minutes until it becomes frothy.\n2. Gradually stir in the flour, olive oil, and salt until a dough forms.\n3. Knead the dough on a floured surface for about 5-10 minutes, until it becomes smooth and elastic.\n4. Place the dough in a greased bowl, cover it with a damp cloth, and let it rise in a warm place for about 1-2 hours, until it doubles in size.\n5. Preheat your oven to 475°F (245°C) and prepare a baking sheet or pizza stone.\n6. Punch down the dough and roll it out into a round shape on a floured surface, making it as thick or thin as you desire.\n7. Place the dough on the prepared baking sheet or pizza stone.\n8. Spread the pizza sauce evenly over the dough, then add your desired toppings.\n9. Bake the pizza in the preheated oven for about 15-20 minutes, until the crust is golden brown and the cheese is melted and bubbly.\n10. Remove the pizza from the oven, let it cool for a few minutes, then slice and enjoy!\n\nFeel free to customize your pizza with your favorite toppings and experiment with different flavors and ingredients. Have fun and enjoy your homemade pizza!", role='assistant', function_call=None, tool_calls=None))], created=1714393187, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_3b956da36b', usage=CompletionUsage(completion_tokens=381, prompt_tokens=14, total_tokens=395))
-</pre>
 </div>
 </div>
 </div>
@@ -7633,8 +7640,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span>
 </pre></div>
 </div>
 </div>
@@ -7644,34 +7650,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Making a pizza from scratch requires a few simple steps. Here's a basic recipe to get you started:
-
-Ingredients:
-- 1 1/2 cups warm water (110°F)
-- 1 package active dry yeast
-- 3 1/2 cups all-purpose flour
-- 2 tablespoons olive oil
-- 1 teaspoon salt
-- 1 can of pizza sauce
-- Toppings of your choice (such as cheese, pepperoni, vegetables, etc.)
-
-Instructions:
-1. In a large mixing bowl, dissolve the yeast in the warm water and let it sit for about 5 minutes until it becomes frothy.
-2. Gradually stir in the flour, olive oil, and salt until a dough forms.
-3. Knead the dough on a floured surface for about 5-10 minutes, until it becomes smooth and elastic.
-4. Place the dough in a greased bowl, cover it with a damp cloth, and let it rise in a warm place for about 1-2 hours, until it doubles in size.
-5. Preheat your oven to 475°F (245°C) and prepare a baking sheet or pizza stone.
-6. Punch down the dough and roll it out into a round shape on a floured surface, making it as thick or thin as you desire.
-7. Place the dough on the prepared baking sheet or pizza stone.
-8. Spread the pizza sauce evenly over the dough, then add your desired toppings.
-9. Bake the pizza in the preheated oven for about 15-20 minutes, until the crust is golden brown and the cheese is melted and bubbly.
-10. Remove the pizza from the oven, let it cool for a few minutes, then slice and enjoy!
-
-Feel free to customize your pizza with your favorite toppings and experiment with different flavors and ingredients. Have fun and enjoy your homemade pizza!
-</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>ChatCompletion(id='chatcmpl-9NdPoxzDD4qgVyPOfHmxohI8Wt3n3', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='The Los Angeles Dodgers won the World Series in 2020 after defeating the Tampa Bay Rays in the final.', role='assistant', function_call=None, tool_calls=None))], created=1715420084, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint=None, usage=CompletionUsage(completion_tokens=22, prompt_tokens=27, total_tokens=49))</pre>
 </div>
 </div>
 </div>
@@ -7682,6 +7664,32 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>'The Los Angeles Dodgers won the World Series in 2020 after defeating the Tampa Bay Rays in the final.'</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
@@ -7695,19 +7703,19 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>{'id': 'chatcmpl-9JKGxuiXlgy9y10tn3E2jdbytYChJ',
+<pre>{'id': 'chatcmpl-9NdPoxzDD4qgVyPOfHmxohI8Wt3n3',
  'choices': [{'finish_reason': 'stop',
    'index': 0,
    'logprobs': None,
-   'message': {'content': "Making a pizza from scratch requires a few simple steps. Here's a basic recipe to get you started:\n\nIngredients:\n- 1 1/2 cups warm water (110°F)\n- 1 package active dry yeast\n- 3 1/2 cups all-purpose flour\n- 2 tablespoons olive oil\n- 1 teaspoon salt\n- 1 can of pizza sauce\n- Toppings of your choice (such as cheese, pepperoni, vegetables, etc.)\n\nInstructions:\n1. In a large mixing bowl, dissolve the yeast in the warm water and let it sit for about 5 minutes until it becomes frothy.\n2. Gradually stir in the flour, olive oil, and salt until a dough forms.\n3. Knead the dough on a floured surface for about 5-10 minutes, until it becomes smooth and elastic.\n4. Place the dough in a greased bowl, cover it with a damp cloth, and let it rise in a warm place for about 1-2 hours, until it doubles in size.\n5. Preheat your oven to 475°F (245°C) and prepare a baking sheet or pizza stone.\n6. Punch down the dough and roll it out into a round shape on a floured surface, making it as thick or thin as you desire.\n7. Place the dough on the prepared baking sheet or pizza stone.\n8. Spread the pizza sauce evenly over the dough, then add your desired toppings.\n9. Bake the pizza in the preheated oven for about 15-20 minutes, until the crust is golden brown and the cheese is melted and bubbly.\n10. Remove the pizza from the oven, let it cool for a few minutes, then slice and enjoy!\n\nFeel free to customize your pizza with your favorite toppings and experiment with different flavors and ingredients. Have fun and enjoy your homemade pizza!",
+   'message': {'content': 'The Los Angeles Dodgers won the World Series in 2020 after defeating the Tampa Bay Rays in the final.',
     'role': 'assistant'}}],
- 'created': 1714393187,
+ 'created': 1715420084,
  'model': 'gpt-3.5-turbo-0125',
  'object': 'chat.completion',
- 'system_fingerprint': 'fp_3b956da36b',
- 'usage': {'completion_tokens': 381, 'prompt_tokens': 14, 'total_tokens': 395}}</pre>
+ 'system_fingerprint': None,
+ 'usage': {'completion_tokens': 22, 'prompt_tokens': 27, 'total_tokens': 49}}</pre>
 </div>
 </div>
 </div>
@@ -7757,7 +7765,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
@@ -7771,7 +7779,43 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">response</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'id': 'chatcmpl-9NdPoxzDD4qgVyPOfHmxohI8Wt3n3',
+ 'choices': [{'finish_reason': 'stop',
+   'index': 0,
+   'logprobs': None,
+   'message': {'content': 'The Los Angeles Dodgers won the World Series in 2020 after defeating the Tampa Bay Rays in the final.',
+    'role': 'assistant'}}],
+ 'created': 1715420084,
+ 'model': 'gpt-3.5-turbo-0125',
+ 'object': 'chat.completion',
+ 'system_fingerprint': None,
+ 'usage': {'completion_tokens': 22, 'prompt_tokens': 27, 'total_tokens': 49}}</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">]</span>
@@ -7785,9 +7829,25 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>{'completion_tokens': 381, 'prompt_tokens': 14, 'total_tokens': 395}</pre>
+<pre>{'completion_tokens': 22, 'prompt_tokens': 27, 'total_tokens': 49}</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 토큰 비용 계산</span>
+<span class="c1"># OpenAI API Pricing &gt; Show prices per 1K tokens</span>
+<span class="c1"># https://openai.com/api/pricing/#language-models</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -7797,7 +7857,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">][</span><span class="s2">"prompt_tokens"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.0005</span><span class="o">/</span><span class="mi">1000</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">][</span><span class="s2">"completion_tokens"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.0015</span> <span class="o">/</span><span class="mi">1000</span>
@@ -7812,9 +7872,9 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>0.0005784999999999999</pre>
+<pre>4.6500000000000005e-05</pre>
 </div>
 </div>
 </div>
@@ -7824,10 +7884,10 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"총 발생 비용 </span><span class="si">{}</span><span class="s2"> 원"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_bill</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span><span class="mf">378.50</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"총 발생 비용 </span><span class="si">{}</span><span class="s2"> 원"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_bill</span><span class="o">*</span><span class="mf">1372.50</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -7840,7 +7900,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>총 발생 비용 0.0005784999999999999 원
+<pre>총 발생 비용 0.06382125000000001 원
 </pre>
 </div>
 </div>
@@ -7851,15 +7911,269 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span> <span class="p">:</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">])</span>
     <span class="n">total_bill</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">][</span><span class="s2">"prompt_tokens"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.0005</span><span class="o">/</span><span class="mi">1000</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">'usage'</span><span class="p">][</span><span class="s2">"completion_tokens"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.0015</span> <span class="o">/</span><span class="mi">1000</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"총 발생 비용 </span><span class="si">{}</span><span class="s2"> 원"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_bill</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span><span class="mf">378.50</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"총 발생 비용 </span><span class="si">{}</span><span class="s2"> 원"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_bill</span><span class="o">*</span><span class="mf">1378.50</span><span class="p">))</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Model Training Data</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Model updates</span>
+<span class="c1"># https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-3.5-turbo"</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
+            <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'completion_tokens': 44, 'prompt_tokens': 29, 'total_tokens': 73}
+총 발생 비용 0.11096925 원
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>I'm sorry, but I don't have real-time information. You may want to check the latest updates through a news website or sports news outlet for the most recent details on the 2022 FIFA World Cup winner.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4"</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
+        <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'completion_tokens': 50, 'prompt_tokens': 29, 'total_tokens': 79}
+총 발생 비용 0.12337574999999999 원
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>As an AI, I don't have real-time data capabilities and can't provide current events or news updates, such as the winner of the 2022 FIFA World Cup. I recommend checking online or on a reliable sports news site for recent updates.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4-turbo-2024-04-09"</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
+        <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Argentina won the 2022 FIFA World Cup. They defeated France in the final, which took place in Qatar.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'completion_tokens': 23, 'prompt_tokens': 29, 'total_tokens': 52}
+총 발생 비용 0.06754650000000001 원
+</pre>
 </div>
 </div>
 </div>
@@ -7880,235 +8194,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-3.5-turbo"</span><span class="p">,</span>
-    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
-            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
-            <span class="p">]</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>{'id': 'chatcmpl-9JKMG83AYcu6SiyrhKvuKXFupOjbJ', 'choices': [{'finish_reason': 'stop', 'index': 0, 'logprobs': None, 'message': {'content': "As of my last update, the 2022 FIFA World Cup has not yet taken place. It is scheduled to be held in Qatar from November 21 to December 18, 2022. You can stay updated with the latest information on the tournament by visiting FIFA's official website or following sports news outlets.", 'role': 'assistant'}}], 'created': 1714393516, 'model': 'gpt-3.5-turbo-0125', 'object': 'chat.completion', 'system_fingerprint': 'fp_3b956da36b', 'usage': {'completion_tokens': 63, 'prompt_tokens': 29, 'total_tokens': 92}}
-총 발생 비용 0.000109 원
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>As of my last update, the 2022 FIFA World Cup has not yet taken place. It is scheduled to be held in Qatar from November 21 to December 18, 2022. You can stay updated with the latest information on the tournament by visiting FIFA's official website or following sports news outlets.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4"</span><span class="p">,</span>
-    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
-        <span class="p">]</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>{'id': 'chatcmpl-9JKMUdzBZ4suBK7LVojLySDhh6Qty', 'choices': [{'finish_reason': 'stop', 'index': 0, 'logprobs': None, 'message': {'content': "As an AI developed by OpenAI and last updated in October 2021, I'm unable to provide real-time information or updates occurring since then, including the winner of the 2022 FIFA World Cup. Please look up the most recent and reliable sources to get that information.", 'role': 'assistant'}}], 'created': 1714393530, 'model': 'gpt-4-0613', 'object': 'chat.completion', 'system_fingerprint': None, 'usage': {'completion_tokens': 56, 'prompt_tokens': 29, 'total_tokens': 85}}
-총 발생 비용 9.850000000000001e-05 원
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>As an AI developed by OpenAI and last updated in October 2021, I'm unable to provide real-time information or updates occurring since then, including the winner of the 2022 FIFA World Cup. Please look up the most recent and reliable sources to get that information.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">"gpt-4-turbo-2024-04-09"</span><span class="p">,</span>
-    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You're the friendly secretary who answers"</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Which country won the 2022 FIFA World Cup?"</span><span class="p">}</span>
-        <span class="p">]</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Argentina won the 2022 FIFA World Cup, defeating France in the final. The tournament was held in Qatar.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">total_bill</span><span class="p">(</span><span class="n">completion</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>{'id': 'chatcmpl-9JKMf4PChMqcpRekl3Lsx0r7AhH91', 'choices': [{'finish_reason': 'stop', 'index': 0, 'logprobs': None, 'message': {'content': 'Argentina won the 2022 FIFA World Cup, defeating France in the final. The tournament was held in Qatar.', 'role': 'assistant'}}], 'created': 1714393541, 'model': 'gpt-4-turbo-2024-04-09', 'object': 'chat.completion', 'system_fingerprint': 'fp_ea6eb70039', 'usage': {'completion_tokens': 23, 'prompt_tokens': 29, 'total_tokens': 52}}
-총 발생 비용 4.9000000000000005e-05 원
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">completion2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -8128,7 +8214,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion2</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
@@ -8145,7 +8231,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>The 2018 FIFA World Cup winning country was France.
+<pre>The winning country of the 2018 FIFA World Cup was France.
 </pre>
 </div>
 </div>
@@ -8156,7 +8242,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">completion3</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -8176,7 +8262,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">content</span> <span class="o">=</span> <span class="n">completion3</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
@@ -8215,7 +8301,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">completion4</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -8241,17 +8327,15 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>한국이 2002년 월드컵에서 화제가 되었던 이유는 여러 가지가 있습니다. 
+<pre>한국이 2002년 월드컵에서 화제가 되었던 이유는 몇 가지가 있습니다. 
 
-첫째, 한국은 호주, 폴란드, 미국을 상대로 3연승을 거둬 조별리그를 1위로 마친 후, 이탈리아, 스페인, 포르투갈 등 강호를 상대로 역대급의 경기력을 보여주었습니다. 특히, 이탈리아와의 16강전에서의 승리는 역대 월드컵 역사상 최대 파란 영웅 국가로 등극시켰습니다.
+첫째로, 한국은 월드컵 역사상 처음으로 4강에 진출한 아시아 국가였습니다. 이전까지는 유럽과 남미의 팀들이 주로 강세를 보였기 때문에 이 같은 성과는 아시아 축구에 대한 새로운 시선을 열었습니다.
 
-둘째, 한국 국민의 열정적인 응원이 큰 화제를 일으켰습니다. 전국적인 '레드 카디'의 해맑은 국민들의 열정적인 환호가 선수들에게 큰 힘이 되었고, 이러한 열정이 전 세계적으로 주목 받았습니다.
+둘째로, 한국은 호스트국이자 공동개최국이었기 때문에 적지 않은 관심을 받았습니다. 한국의 열정적인 축구 팬들, 열기 넘치는 경기장 분위기, 그리고 훌륭한 대회 조직이 현지와 국제적으로 큰 주목을 받았습니다.
 
-셋째, 한국 대표팀의 주장인 황선홍은 '화랑의 대장'이라 불리며 국내외에서 큰 인기를 끌었습니다. 또한, 박지성, 이동국 등의 선수들도 역대급의 성과를 내며 더욱 화제가 되었습니다.
+셋째로, 한국 대표팀이 이룩한 성과들도 빼놓을 수 없는 이유입니다. 한국은 강력한 상대팀들을 상대로 연이은 승리를 거두며 4강에 진출하는 위엄을 보였습니다. 그리고 또한 한국 대표팀의 성과는 국민들에게 큰 자부심과 환호를 불러일으켰습니다.
 
-넷째, 한국이 4강에 진출한 것도 큰 화제였습니다. 이전까지 한국은 월드컵에서 최고로 8강까지 진출한 적이 있었지만, 4강이라는 성적을 달성한 것은 역사적인 순간으로 남았습니다.
-
-이렇게 다양한 이유로 한국이 2002년 월드컵에서 화제가 되었습니다.
+이 같은 이유들이 모여 한국을 2002년 월드컵에서 가장 화제가 되었던 나라로 만들었습니다.
 </pre>
 </div>
 </div>
@@ -8262,7 +8346,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">completion5</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -8286,7 +8370,7 @@ Feel free to customize your pizza with your favorite toppings and experiment wit
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>2002년 월드컵에서 가장 화제가 되었던 나라는 한국과 일본입니다. 이번 월드컵은 한국과 일본이 공동으로 개최하였고, 한국은 준결승에 진출하는 등 역사적인 성적을 거두었으며, 일본도 좋은 경기력을 보여 많은 관심을 받았습니다. 두 나라는 이번 대회에서 많은 관심을 받았으며, 성공적인 대회를 개최한 것으로 평가받았습니다.
+<pre>2002년 월드컵에서 가장 화제가 된 나라는 대한민국이었습니다. 대한민국은 준결승까지 진출하여 역대 최고 성적을 거두었으며, 강력한 팀들을 상대로 큰 경기력을 보여주었던 대한민국 대표팀은 전 세계적인 주목을 받았습니다. 특히 공동 개최국인 일본에서 열린 월드컵에서 아시아 대륙에서의 대단한 성과를 이룬 대한민국은 많은 사람들의 관심을 받았습니다.
 </pre>
 </div>
 </div>
