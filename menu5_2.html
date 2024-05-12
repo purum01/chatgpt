@@ -51,24 +51,24 @@ if not os.path.exists(output_folder):
 os.makedirs(output_folder)
 
 def generate_letter(company, receiver, number, sender, title, template_path):
-# 템플릿 파일을 불러옴
-doc = docx.Document(template_path)
+    # 템플릿 파일을 불러옴
+    doc = docx.Document(template_path)
 
-# 템플릿 내용을 대체
-for paragraph in doc.paragraphs:
-    for run in paragraph.runs:
-        if "{company}" in run.text:
-            run.text = run.text.replace("{company}", company)
-        if "{number}" in run.text:
-            run.text = run.text.replace("{number}", number)
-        if "{receiver}" in run.text:
-            run.text = run.text.replace("{receiver}", receiver)
-        if "{sender}" in run.text:
-            run.text = run.text.replace("{sender}", sender)
-        if "{title}" in run.text:
-            run.text = run.text.replace("{title}", title)
+    # 템플릿 내용을 대체
+    for paragraph in doc.paragraphs:
+        for run in paragraph.runs:
+            if "{company}" in run.text:
+                run.text = run.text.replace("{company}", company)
+            if "{number}" in run.text:
+                run.text = run.text.replace("{number}", number)
+            if "{receiver}" in run.text:
+                run.text = run.text.replace("{receiver}", receiver)
+            if "{sender}" in run.text:
+                run.text = run.text.replace("{sender}", sender)
+            if "{title}" in run.text:
+                run.text = run.text.replace("{title}", title)
 
-return doc
+    return doc
 
 # 버튼을 클릭하면 docx 파일들이 생성됨
 if st.button('편지 생성 시작'):
