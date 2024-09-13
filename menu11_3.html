@@ -1,83 +1,51 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />   
 
-<code id="source-code" class="language-python">
-#################  Streamlit 사용하여 PDF 기반 답변하기  ###################
+<h1 class="title">로또 번호 생성기</h1>   
 
-import streamlit as st
-from PyPDF2 import PdfReader
+<div class="subtitle"> ChatGPT 질문</div>
+    <div>
+        <pre>
+다음과 같은 내용으로 구현된 파이썬 코드를 생성해주세요
+#제목
+로또 생성기
 
-from langchain_openai import ChatOpenAI
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
-from langchain.chains.question_answering import load_qa_chain
+#조건
+1. 로또번호는 1부터 45사이의 정수값임
+2. 6개의 로또 번호 생성함
+3. 생성된  6개 로또 번호 오름차순 정렬함
+4. 6개의 로또번호를  5세트 생성함
+    </pre>
+<div class="subtitle"> ChatGPT 답변</div>        
+    <pre>
+            <code class="language-python">
+# 파이썬에서 무작위로 숫자를 고르게 해주는 도구를 가져와요.
+import random
 
+# 로또 번호를 만드는 방법을 알려줄 거예요.
+def make_lotto_numbers():
+    # 1부터 45까지 숫자 중에서 6개를 골라요. 그리고 순서대로 나열해요.
+    numbers = random.sample(range(1, 46), 6)
+    numbers.sort()  # 고른 숫자를 순서대로 나열해요.
+    return numbers
 
-##### 메인 함수 #####
-def main():
-    st.set_page_config(page_title="PDF analyzer", layout="wide")
+# 이제 5번 반복해서 로또 번호를 만들 거예요.
+def make_five_sets():
+    all_sets = []  # 여기에 만든 로또 번호를 모을 거예요.
+    for _ in range(5):  # 5번 반복해요.
+        lotto_numbers = make_lotto_numbers()  # 로또 번호를 만들어요.
+        all_sets.append(lotto_numbers)  # 만든 번호를 모아둘 곳에 추가해요.
+    return all_sets
 
-    # 사이드바
-    with st.sidebar:
+# 로또 번호 5세트를 만들어 봐요.
+lotto_sets = make_five_sets()
 
-        # Open AI API 키 입력받기
-        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')
-        
-        # 입력받은 API 키 표시
-        if open_apikey:
-            st.session_state["OPENAI_API"] = open_apikey 
-        st.markdown('---')
-        
-    # 메인공간
-    st.header("PDF 내용 질문 프로그램📜")
-    st.markdown('---')
-    st.subheader("PDF 파일을 넣으세요")
-    # PDF 파일 받기
-    pdf = st.file_uploader(" ", type="pdf")
-    if pdf is not None:
-        # PDF 파일 텍스트 추출하기
-        pdf_reader = PdfReader(pdf)
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-        # 청크 단위로 분할하기
-        text_splitter = CharacterTextSplitter(
-            separator="\n",
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len
-        )
-        chunks = text_splitter.split_text(text)
-
-        st.markdown('---')
-        st.subheader("질문을 입력하세요")
-        # 사용자 질문 받기
-        user_question = st.text_input("Ask a question about your PDF:")
-        if user_question:
-            # 임베딩/ 시멘틱 인덱스
-            embeddings = OpenAIEmbeddings(openai_api_key=st.session_state["OPENAI_API"])
-            knowledge_base = FAISS.from_texts(chunks, embeddings)
-            
-            docs = knowledge_base.similarity_search(user_question)
-
-            # 질문하기
-            llm = ChatOpenAI(temperature=0,
-                    openai_api_key=st.session_state["OPENAI_API"],
-                    max_tokens=2000,
-                    model_name='gpt-3.5-turbo',
-                    request_timeout=120
-                    )
-            chain = load_qa_chain(llm, chain_type="stuff")
-            response = chain.invoke(input={ "input_documents": docs,   "question": user_question})
-            
-            # 답변결과
-            st.info(response['output_text'])
-            
-
-if __name__=='__main__':
-    main()
-</code>                
-
-
+# 만든 로또 번호를 화면에 보여줘요.
+print("만든 로또 번호들:")
+for set_number, lotto_set in enumerate(lotto_sets, start=1):
+    print(f"{set_number}번째 세트: {lotto_set}")
+                </code>
+            </pre>
+    </div>
+   

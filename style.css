@@ -68,7 +68,7 @@ a {
 }
 
 /* "정답" 버튼의 스타일을 지정 */
-#answerButton {
+#answerButton, #resetButton {
     float: right; /* 버튼을 오른쪽으로 이동 */
     background-color: green; /* 배경 색상을 초록색으로 설정 */
     color: white; /* 버튼 내 텍스트 색상을 흰색으로 설정 */
@@ -76,6 +76,7 @@ a {
     border: none; /* 테두리 제거 */
     border-radius: 5px; /* 버튼 모서리를 둥글게 */
     cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
+    margin: 10px;
 }
 /* "정답" 버튼에 마우스를 올렸을 때의 스타일을 지정 */
 #answerButton:hover {
@@ -93,19 +94,6 @@ a {
 
 .mission > li {
     font-weight: bold;
-}
-
-
-#source-code {
-    white-space: pre;        /* 공백과 줄바꿈을 유지 */
-    display: block;          /* 블록 레벨 요소로 만들기 */
-    background-color: #f4f4f4;/* 배경색 지정 */
-    border: 1px solid #ccc;  /* 테두리 설정 */
-    padding: 10px;           /* 패딩 추가 */
-    overflow: auto;          /* 내용이 넘칠 경우 스크롤바 표시 */
-    font-family: monospace;  /* 고정폭 글꼴 사용 */
-    font-size: 16px;         /* 글꼴 크기 설정 */
-    color: #333;             /* 글자색 설정 */
 }
 
 .title {
