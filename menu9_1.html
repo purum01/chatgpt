@@ -2,75 +2,74 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">Exception(예외) 객체</h1>    
-<div class="faq-container">
-     <div class="faq-section">
-          <div class="faq-question">
-               <img  src="question.png" width="34px" height="34px" >
-               파이썬의 예외 객체 계층적 구조를 보여주세요
-               <i class="fas fa-chevron-down"></i>
-          </div>
-     <div class="faq-answer">
-          <pre>
-               <code class="language-python" >   
-                    BaseException
-                    +-- SystemExit
-                    +-- KeyboardInterrupt
-                    +-- GeneratorExit
-                    +-- Exception
-                         +-- StopIteration
-                         +-- ArithmeticError
-                         |    +-- FloatingPointError
-                         |    +-- OverflowError
-                         |    +-- ZeroDivisionError
-                         +-- AssertionError
-                         +-- AttributeError
-                         +-- BufferError
-                         +-- EOFError
-                         +-- ImportError
-                              +-- ModuleNotFoundError
-                         +-- LookupError
-                              +-- IndexError
-                              +-- KeyError
-                         +-- MemoryError
-                         +-- NameError
-                              +-- UnboundLocalError
-                         +-- OSError
-                              +-- FileNotFoundError
-                              +-- InterruptedError
-                              +-- PermissionError
-                              +-- ...
-                         +-- RuntimeError
-                              +-- NotImplementedError
-                              +-- RecursionError
-                         +-- SyntaxError
-                              +-- IndentationError
-                                   +-- TabError
-                         +-- SystemError
-                         +-- TypeError
-                         +-- ValueError
-                              +-- UnicodeError
-                                   +-- UnicodeDecodeError
-                                   +-- UnicodeEncodeError
-                                   +-- UnicodeTranslateError
-                         +-- Warning
-                              +-- DeprecationWarning
-                              +-- PendingDeprecationWarning
-                              +-- RuntimeWarning
-                              +-- SyntaxWarning
-                              +-- UserWarning
-                              +-- FutureWarning
-                              +-- ImportWarning
-                              +-- UnicodeWarning
-                              +-- BytesWarning
-                              +-- ResourceWarning
-                       
-                </code>
-            </pre>
-        </div>    
+
+<code id="source-code" class="language-python">
+#################  광고문구 자동 생성하기 ###################
+
+import streamlit as st
+import openai
+
+
+def askGpt(prompt,apikey):
+    client = openai.OpenAI(api_key = apikey)
+    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": prompt}])
+    gptResponse = response.choices[0].message.content
+    return gptResponse
+
+
+def main():
+    st.set_page_config(page_title="광고 문구 생성 프로그램")
+    # session state 초기화
+    if "OPENAI_API" not in st.session_state:
+        st.session_state["OPENAI_API"] = ""
+
+    # 사이드바
+    with st.sidebar:
+        # Open AI API 키 입력받기
+        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')
+        
+        if open_apikey:
+            st.session_state["OPENAI_API"] = open_apikey 
+        st.markdown('---')
+
+    #메인공간
+    st.header("🎸광고 문구 생성 프로그램")
+    st.markdown('---')
+
+    col1, col2 =  st.columns(2)
+    with col1:
+        name = st.text_input("제품명",placeholder=" ")
+        strenghth = st.text_input("제품 특징",placeholder=" ")
+        keyword = st.text_input("필수 포함 키워드",placeholder=" ")
+    with col2:  
+        com_name = st.text_input("브랜드 명",placeholder="Apple, 올리브영..")
+        tone_manner = st.text_input("톤엔 메너",placeholder="발랄하게, 유머러스하게, 감성적으로..")
+        value = st.text_input("브랜드 핵심 가치",placeholder="필요 시 입력")
+
+    if st.button("광고 문구 생성"):
+        prompt = f'''
+        아래 내용을 참고해서 1~2줄짜리 광구문구 5개 작성해줘
+        - 제품명: {name}
+        - 브렌드 명: {com_name}
+        - 브렌드 핵심 가치: {value}
+        - 제품 특징: {strenghth}
+        - 톤엔 매너: {tone_manner}
+        - 필수 포함 키워드: {keyword}
+        '''
+        st.info(askGpt(prompt,st.session_state["OPENAI_API"]))
+
+if __name__=='__main__':
+    main()
 
 
 
-</div>    
-
-<script src="content.js"></script>
+# 예시
+# 제품명: "클리어뷰 스마트 안경"
+# 브랜드명: "옵티테크"
+# 제품 특징: "고해상도 증강 현실 디스플레이, 24시간 배터리 수명, 가벼운 디자인"
+# 톤앤매너: 영감을 주고 미래지향적
+# 필수 포함 키워드: "증강 현실, 일상적인 편안함, 첨단 기술"
+# 브랜드 핵심 가치: "혁신, 명확성, 사용자 중심 설계"    
+</code>

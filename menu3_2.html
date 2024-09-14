@@ -1,214 +1,88 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">비교 연산자</h1>
-
+<h1 class="title">팬데믹 데이터 병합 및 분석</h1>
 <div class="faq-container">
     <div class="faq-section">
         <div class="faq-question">
-            <img src="question.png" width="34px" height="34px">
-            비교 연산자 예제 코드를 보여주세요
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer" id="c1" style="display: none;">
-<pre>
-<code class="language-python">
-# 변수 선언 및 초기화
-a = 10
-b = 20
+        <div class="faq-answer">
+            <code id="source-code">
+다음과 같은 내용으로 구현된 파이썬 코드를 생성해주세요
 
-# 동등 비교
-print("a == b:", a == b)  # False
+# 제목
+2020년 Covid 현황
 
-# 부등 비교
-print("a != b:", a != b)  # True
-
-# 크기 비교
-print("a > b:", a > b)   # False
-print("a < b:", a < b)   # True
-
-# 크거나 같음, 작거나 같음
-print("a >= b:", a >= b)  # False
-print("a <= b:", a <= b)  # True
-</code>    
-</pre>
+#조건
+1.  covid 디렉토리에 있는 모든 csv 파일이 작업 대상임
+2. 각 파일에서  'Country_Region', 'Confirmed' 컬럼만 추출함
+3. 'Country_Region' 컬럼의 값은 중복되면 안됨, 여러개가 있는 경우 그룹핑하고 'Confirmed' 컬럼 값의 합계를 구함
+4. 'Confirmed'  컬러명은 파일이름에서 확장자를 제외한 이름으로 변경함. 이때 '-'는 '/'로 변경함
+5. 각 파일들은 'Country_Region' 컬럼을 기준으로 병합함
+6. 병합한 내용을 Excel 파일로 저장함            
+</code>            
         </div>
     </div>
 
     <div class="faq-section">
         <div class="faq-question">
-            <img src="question.png" width="30px" height="30">
-            연습문제
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer" style="display: none;">
-            <ol class="mission">
-                <li> 다음 중 두 값이 같은지 비교하는 연산자는 무엇인가?</li>
-                    <ul>
-                        <li><input type="radio" name="1" value="1"> <span>=</span></li>
-                        <li><input type="radio" name="1" value="2"> <span>==</span></li>
-                        <li><input type="radio" name="1" value="3"> <span>!=</span></li>
-                        <li><input type="radio" name="1" value="4"> <span><</span></li>
-                    </ul>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import pandas as pd
+import os
+import glob
 
-                <li> 다음 코드의 실행결과는 무엇인가?</li>
-                <pre>
-                    <code class="language-python">
-                        x = 10
-                        y = 15
-                        print(x > y)
-                    </code>
-                </pre>  
-                <ul>
-                    <li><input type="radio" name="2" value="1"> <span>True</span></li>
-                    <li><input type="radio" name="2" value="2"> <span>False</span></li>
-                    <li><input type="radio" name="2" value="3"> <span>10</span></li>
-                    <li><input type="radio" name="2" value="4"> <span>에러발생</span></li>
-                </ul>
-                    
-                <li> 다음 코드의 실행결과는 무엇인가?</li>
-                <pre>
-                    <code class="language-python">
-                        a = 5
-                        b = 5
-                        print(a <= b)
-                    </code>
-                </pre>  
-                <ul>
-                    <li><input type="radio" name="3" value="1"> <span>True</span></li>
-                    <li><input type="radio" name="3" value="2"> <span>False</span></li>
-                    <li><input type="radio" name="3" value="3"> <span>5</span></li>
-                    <li><input type="radio" name="3" value="4"> <span>에러발생</span></li>
-                </ul>
+# covid 디렉토리에서 모든 csv 파일 목록을 가져옴
+csv_files = glob.glob('covid/*.csv')
 
-                <li> 다음 코드의 실행 결과는 무엇인가?</li>
-                <pre>
-                    <code class="language-python">
-                        x = 7
-                        y = 10
-                        print(x == y)
-                    </code>
-                </pre>  
-                <ul>
-                    <li><input type="radio" name="4" value="1"> <span>True</span></li>
-                    <li><input type="radio" name="4" value="2"> <span>False</span></li>
-                    <li><input type="radio" name="4" value="3"> <span>7</span></li>
-                    <li><input type="radio" name="4" value="4"> <span>에러발생</span></li>
-                </ul>
+# 병합된 데이터를 저장할 빈 데이터프레임 생성
+merged_df = pd.DataFrame()
 
-                <li> 다음 코드의 실행 결과는 무엇인가?</li>
-                <pre>
-                    <code class="language-python">
-                        print(3 == '3')
-                    </code>
-                </pre>  
-                <ul>
-                    <li><input type="radio" name="5" value="1"> <span>True</span></li>
-                    <li><input type="radio" name="5" value="2"> <span>False</span></li>
-                    <li><input type="radio" name="5" value="3"> <span>SyntaxError</span></li>
-                    <li><input type="radio" name="5" value="4"> <span>TypeError</span></li>
-                </ul>
+for file in csv_files:
+    # 파일에서 'Country_Region', 'Confirmed' 컬럼만 읽어옴
+    df = pd.read_csv(file, usecols=['Country_Region', 'Confirmed'])
+    
+    # 'Country_Region'별로 그룹핑하고 'Confirmed'의 합계를 구함
+    grouped_df = df.groupby('Country_Region', as_index=False).sum()
+    
+    # 파일 이름에서 확장자를 제거하고 '-'를 '/'로 변경함
+    column_name = os.path.basename(file).replace('.csv', '').replace('-', '/')
+    # 'Confirmed' 컬럼 이름을 변경함
+    grouped_df.columns = ['Country_Region', column_name]
+    
+    # 병합된 데이터프레임에 현재 데이터프레임을 병합함
+    if merged_df.empty:
+        merged_df = grouped_df
+    else:
+        merged_df = pd.merge(merged_df, grouped_df, on='Country_Region', how='outer')
 
-                <li> 다음 코드의 실행 결과는 무엇인가?</li>
-                <pre>
-                    <code class="language-python">
-                        print(3 = 3)
-                    </code>
-                </pre>  
-                <ul>
-                    <li><input type="radio" name="6" value="1"> <span>True</span></li>
-                    <li><input type="radio" name="6" value="2"> <span>False</span></li>
-                    <li><input type="radio" name="6" value="3"> <span>SyntaxError</span></li>
-                    <li><input type="radio" name="6" value="4"> <span>TypeError</span></li>
-                </ul>
-            </ol>
-            <button id="answerButton">정답</button>
-            <button id="resetButton">초기화</button>
-            <div id="answerText" style="display:none;">
-                <ul>
-                    <li>(1) 2번 : ==</li>
-                    <li>(2) 2번 : False</li>
-                    <li>(3) 1번 : True</li>
-                    <li>(4) 2번 : False</li>
-                    <li>(5) 2번 : False</li>
-                    <li>(6) 3번 : SyntaxError</li>
-                </ul>
-            </div>
+# NaN 값을 0으로 채움
+merged_df.fillna(0, inplace=True)
+
+# 병합된 데이터를 Excel 파일로 저장함
+merged_df.to_excel('2020_Covid_Status.xlsx', index=False)
+
+print("Excel 파일이 성공적으로 생성되었습니다.")
+                
+            </code>
         </div>
-    </div>      
+    </div>
+
+
+
+    <a href="https://github.com/purum01/python_seminar/blob/main/exam03_DA.ipynb">
+        Data 분석 예제
+    </a>
 </div>
 
-<style>
-.correct-answer {
-    color: red;
-    font-weight: bold;
-}
-</style>
 
-<script>
-// 드롭다운 기능 구현
-document.querySelectorAll('.faq-question').forEach(question => {
-    question.addEventListener('click', function() {
-        const answer = this.nextElementSibling;
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-        } else {
-            answer.style.display = 'none';
-        }
-    });
-});
+<script src="content.js"></script>
 
-// "정답" 버튼 클릭 시 정답을 빨간색으로 표시
-document.getElementById("answerButton").onclick = function() {
-    var answers = {
-        1: "2",  // ==
-        2: "2",  // False
-        3: "1",  // True
-        4: "2",  // False
-        5: "2",  // False
-        6: "3"   // SyntaxError
-    };
-
-    // 정답을 빨간색으로 표시
-    for (var q in answers) {
-        var correctAnswer = answers[q];
-        var options = document.getElementsByName(q);
-        for (var i = 0; i < options.length; i++) {
-            var spanElement = options[i].nextElementSibling; // 라디오 버튼의 텍스트를 감싸는 span
-            if (options[i].value === correctAnswer) {
-                spanElement.classList.add("correct-answer");
-            } else {
-                spanElement.classList.remove("correct-answer");
-            }
-        }
-    }
-
-    // 정답 메시지 토글
-    var answerText = document.getElementById("answerText");
-    if (answerText.style.display === "none") {
-        answerText.style.display = "block";
-    } else {
-        answerText.style.display = "none";
-    }
-};
-
-// "초기화" 버튼 클릭 시 상태를 초기화
-document.getElementById("resetButton").onclick = function() {
-    // 모든 라디오 버튼 선택 해제
-    var radios = document.querySelectorAll('input[type="radio"]');
-    radios.forEach(function(radio) {
-        radio.checked = false;
-    });
-
-    // 빨간색 정답 표시 제거
-    var spanElements = document.querySelectorAll('span');
-    spanElements.forEach(function(span) {
-        span.classList.remove("correct-answer");
-    });
-
-    // 정답 메시지 숨김
-    var answerText = document.getElementById("answerText");
-    answerText.style.display = "none";
-};
-</script>

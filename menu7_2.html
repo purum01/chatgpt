@@ -2,101 +2,96 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">함수 호출</h1>
+<h1 class="title">이메일 자동화 2</h1>
 <div class="faq-container">
     <div class="faq-section">
         <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px" >
-            파이썬 함수 호출에 관한 예제 코드를 생성해주세요
+            <img src="gpt.png"   width="34px" height="34px" >
+            STEP6
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 streamlit으로 변형해주세요.
+"""       
+import streamlit as st
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+import base64
 
+# SMTP 서버 설정 (예: naver)
+smtp_server = "smtp.naver.com"
+smtp_port = 587
 
-            <h3>기본 함수 호출</h3>
-            <pre>
-                <code class="language-python" >   
-# 함수 정의
-def greet():
-    return "Hello, World!"
+# 스트림릿 타이틀
+st.title('이메일 발송 애플리케이션')
 
-# 함수 호출
-message = greet()
-print(message)  # 출력: Hello, World!
-                </code>
-            </pre>
+# 파일 업로드 섹션
+email_file = st.file_uploader("이메일 목록 엑셀 파일을 업로드하세요 (Email, Name 컬럼 필요)", type=['xlsx'])
+text_file = st.file_uploader("이메일 본문 텍스트 파일 업로드", type=['txt'])
+attachment_file = st.file_uploader("첨부 파일 업로드", type=['xlsx', 'docx', 'pdf'])
 
-            <h3>매개변수와 함께 함수 호출</h3>
-            <pre>
-                <code class="language-python" >  
-# 함수 정의
-def add(a, b):
-    return a + b
+# 사용자 이메일과 패스워드 입력
+sender_email = st.text_input("송신자 이메일 주소:")
+sender_password = st.text_input("송신자 비밀번호:", type="password")
 
-# 함수 호출
-result = add(3, 4)
-print(result)  # 출력: 7
-                </code>
-            </pre>
+# 이메일 전송 버튼
+send_email = st.button("이메일 보내기")
 
-            <h3>기본값을 가진 매개변수와 함께 함수 호출</h3>
-            <pre>
-                <code class="language-python" >  
-# 함수 정의
-def greet(name="World"):
-    return f"Hello, {name}!"
+if send_email:
+    if email_file and text_file and sender_email and sender_password:
+        try:
+            # 이메일 목록 읽기
+            email_df = pd.read_excel(email_file)
+            # 본문 텍스트 읽기
+            text_body = str(text_file.getvalue(), 'utf-8')
+            # 첨부 파일 읽기
+            attachment = attachment_file.read()
 
-# 기본값을 사용하여 함수 호출
-print(greet())  # 출력: Hello, World!
+            # SMTP 서버 연결
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(sender_email, sender_password)
 
-# 매개변수 값을 제공하여 함수 호출
-print(greet("Python"))  # 출력: Hello, Python!
-                </code>
-            </pre>
+            # 이메일 전송
+            for idx, row in email_df.iterrows():
+                message = MIMEMultipart()
+                message["From"] = sender_email
+                message["To"] = row['Email']
+                message["Subject"] = "신간 안내"
 
-            <h3>키워드 인자를 사용한 함수 호출</h3>
-            <pre>
-                <code class="language-python" >  
-# 함수 정의
-def describe_pet(animal_type, pet_name):
-    print(f"I have a {animal_type} and its name is {pet_name}.")
+                # 메일 본문 설정
+                body = text_body.replace('{name}', row['Name'])
+                message.attach(MIMEText(body, "plain", "utf-8"))
 
-# 키워드 인자를 사용하여 함수 호출
-describe_pet(animal_type="hamster", pet_name="Harry")
-# 출력: I have a hamster and its name is Harry.
+                # 첨부 파일 추가
+                part = MIMEApplication(attachment, Name="첨부파일")
+                part['Content-Disposition'] = 'attachment; filename="{}"'.format(attachment_file.name)
+                message.attach(part)
 
-# 키워드 인자의 순서를 바꿔서 호출
-describe_pet(pet_name="Harry", animal_type="hamster")
-# 출력: I have a hamster and its name is Harry.
-                </code>
-            </pre>
+                # 이메일 발송
+                server.sendmail(sender_email, row['Email'], message.as_string())
 
-            <h3>가변 매개변수를 사용한 함수 호출</h3>
-            <pre>
-                <code class="language-python" >  
-# 함수 정의
-def make_pizza(*toppings):
-    print("Making a pizza with the following toppings:")
-    for topping in toppings:
-        print(f"- {topping}")
+            st.success("이메일이 성공적으로 발송되었습니다.")
+            server.quit()
 
-# 가변 매개변수를 사용하여 함수 호출
-make_pizza('pepperoni')
-# 출력: Making a pizza with the following toppings:
-#      - pepperoni
+        except Exception as e:
+            st.error(f"오류가 발생했습니다: {e}")
 
-make_pizza('mushrooms', 'green peppers', 'extra cheese')
-# 출력: Making a pizza with the following toppings:
-#      - mushrooms
-#      - green peppers
-#      - extra cheese                    
-                </code>
-            </pre>
+    else:
+        st.error("모든 필드를 채워주세요!")
+
+            </code>
         </div>
     </div>
 
-   
-    
-</div>    
+
+
+</div>
 
 <script src="content.js"></script>
+

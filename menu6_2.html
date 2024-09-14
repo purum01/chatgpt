@@ -2,125 +2,66 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">list Iterable</h1>
+<h1 class="title">계약자 정보 추출하기</h1>
 <div class="faq-container">
     <div class="faq-section">
         <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px">
-            파이썬의 list 객체가 가지는 메소드들에 대해 설명해주세요
+            <img  src="question.png" width="34px" height="34px"  >
+            질문
             <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">
-            <img src="gpt.png">
-
-            파이썬의 list 객체는 순서가 있는 요소의 집합을 다루기 위한 다양한 메소드를 제공합니다. 이러한 메소드들을 활용하여 리스트 내 요소를 추가, 삭제, 검색, 정렬 등 다양한 작업을 수행할 수 있습니다. 아래는 list 객체의 주요 메소드들에 대한 설명입니다:
-            <h3>추가 및 확장</h3>
-            <ul>
-                <li>append(x): 리스트의 끝에 요소 x를 추가합니다.</li>
-                <li>extend(iterable): 리스트의 끝에 주어진 iterable의 모든 요소를 추가합니다.</li>
-                <li>insert(i, x): 지정된 위치 i에 요소 x를 삽입합니다.</li>
-            </ul>
-            <h3>요소 제거</h3>
-            <ul>
-                <li>remove(x): 리스트에서 값이 x와 같은 첫 번째 항목을 삭제합니다. 해당 요소가 없으면 오류를 발생시킵니다.</li>
-                <li>pop([i]): 지정된 위치 i에 있는 요소를 리스트에서 제거하고, 그 요소를 반환합니다. i가 지정되지 않으면, 리스트의 마지막 요소를 제거하고 반환합니다.</li>
-                <li>clear(): 리스트의 모든 요소를 삭제합니다.</li>
-            </ul>           
-            <h3>조회 및 검색</h3>
-            <ul>
-                <li>index(x[, start[, end]]): 리스트에서 x와 값이 같은 첫 번째 항목의 위치를 반환합니다. 해당 요소가 없으면 오류를 발생시킵니다.</li>
-                <li>reverse(): 리스트의 요소 순서를 뒤집습니다.</li>
-            </ul> 
-            <h3>정렬</h3>
-            <ul>
-                <li>sort(key=None, reverse=False): 리스트의 요소를 정렬합니다. key 매개변수는 정렬 기준을 지정하며, reverse가 True이면 내림차순으로 정렬합니다.</li>
-                <li>reverse(): 리스트의 요소 순서를 뒤집습니다.</li>
-            </ul>        
-            <h3>복사</h3>
-            <ul>
-                <li>copy(): 리스트의 얕은 복사본을 반환합니다.</li>
-            </ul>                           
+            <code id="source-code">
+PDF 파일에서  '주 소:'와  '회 사 명:'와  '대 표 자:'와  '연 락 처:' 글자들이 들어었는 모든 줄들을 추출해줘
+            </code>            
         </div>
     </div>
 
     <div class="faq-section">
         <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px">
-            연습문제    
+            <img src="gpt.png"   width="34px" height="34px" >
+            답변
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">
-            <ol>
-                <li> 주어진 조건에 따라 코드를 작성하세요</li>
-                    <div class="highlight">
-                        <pre contenteditable="true">
-                            <code class="language-python">
-alist = ['바나나', '오렌지', '사과', '포도']
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+import PyPDF2
 
-# alist의 마지막 요소로 '복숭아'를 추가합니다.
+pdf_path = "data/sample1.pdf"
 
-# alist의 요소 중 '오렌지'를 삭제합니다.
+def extract_text_from_pdf(pdf_path):
+    text_lines = []
+    with open(pdf_path, "rb") as pdf_file:
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        for page_number in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_number]
+            text_lines.extend(page.extract_text().splitlines())
+    return text_lines
 
-# alist를 출력합니다.
-                            </code>
-                        </pre>                        
-                    </div>    
+def extract_information(lines):
+    relevant_information = []
+    keywords = ['주 소:', '회 사 명:', '대 표 자:', '연 락 처:']
+    
+    for line in lines:
+        for keyword in keywords:
+            if keyword in line:
+                relevant_information.append(line.strip())
+    
+    return relevant_information
 
-                <li> 주어진 조건에 따라 코드를 작성하세요</li>
-                    <div class="highlight">
-                        <pre contenteditable="true">
-                            <code class="language-python">
-scores = [98, 72, 85, 92, 95, 89, 77, 81, 93, 68, 74, 88, 90, 66, 79]
+# PDF 파일에서 텍스트 추출
+text_lines = extract_text_from_pdf(pdf_path)
 
-# scores의 점수 합계를 출력합니다.
+# 주소, 회사명, 대표자, 연락처 등을 추출
+relevant_information = extract_information(text_lines)
 
-# scores의 점수 평균을 출력합니다.
-
-# scores의 최고 점수를 출력합니다.
-
-# scores의 최저 점수를 출력합니다.
-                            </code>
-                        </pre>                        
-                    </div>
-
-                <li> scores 리스트에서 1등부터 5등까지의 점수를 출력하는 코드를 작성하세요</li>
-                    <div class="highlight">
-                        <pre contenteditable="true">
-                            <code class="language-python">
-scores = [98, 72, 85, 92, 95, 89, 77, 81, 93, 68, 74, 88, 90, 66, 79]
-
-# 1등부터 5등까지의 점수만 출력합니다.
-                            </code>
-                        </pre>                        
-                    </div>
-
-                <li> alist 리스트에서 '코코넛'의 인덱스 정보를 출력하는 코드를 작성하세요</li>
-                    <div class="highlight">
-                        <pre contenteditable="true">
-                            <code class="language-python">
-fruits = ['바나나', '오렌지', '사과', '포도', '딸기', '키위', '수박', '망고', '복숭아', 
-          '체리', '파인애플', '레몬', '자두', '라임', '파파야', '아보카도', '코코넛', '감', '블루베리']
-
-# '코코넛'의 인덱스를 출력합니다.
-                            </code>
-                        </pre>                        
-                    </div>
-
-                <li> 다음과 같이 리스트가 정의되었을 경우, 첫번째와 마지막 항목을 출력하는 코드를 작성하세요.</li>
-                    <div class="highlight">
-                        <pre contenteditable="true">
-                            <code class="language-python">
-color_list = ['Red', 'Green', 'White', 'Black']
-
-# color_list의 첫번째 요소를 출력하세요
-
-# color_list의 마지막 요소를 출력하세요
-                            </code>
-                        </pre>                        
-                    </div>
-            </ol>
+# 결과 출력
+for info in relevant_information:
+    print(info)                
+            </code>
         </div>
-    </div>    
+    </div>
 </div>
 
 <script src="content.js"></script>
+

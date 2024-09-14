@@ -2,156 +2,125 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">함수 연습 문제</h1>
-<style>
-    ol.mission li {
-        margin-top: 20px; /* 각 li 요소 위에 공백을 추가 */
-    }
-</style>
-
-<ol class="mission">
-
-    <li>다음 코드를 실행하면 오류가 발생합니다. 코드를 올바르게 수정하세요</li>
-        <div class="highlight"> 
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">   
-def f(a, b): 
-
-c1 = a + b 
-c2 = a - b 
-return c1, c2 
-
-f(1, 2)    
-                </code>
-            </pre>            
+<h1 class="title">이메일 자동화 4</h1>
+<div class="faq-container">
+    
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            STEP8
+            <i class="fas fa-chevron-down"></i>
         </div>
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 다음과 같은 조건으로 변경해주세요
+# 조건
+1. 메일 수신자 이메일은 email_list.xlsx 파일에서 읽어들인 이메일중 다중 선택할 수 있게 한다. 
+2. letter.txt 파일 선택은 위젯으로 처리한다. 또는 직접 메일 본문을 작성할 수 있도록 한다.
+3. book_list.xlsx 파일 선택은 위젯으로 처리 
+"""
 
-    <li>다음 코드 실행 결과는 None이 출력됩니다. result 변수 값이 출력되도록 코드를 수정하세요</li>
-    <div class="highlight"> 
-        <pre contenteditable="true" style="white-space: pre-wrap;">
-            <code class="language-python">   
-def area(r) :
-    result = 3.14 * r * r 
+import streamlit as st
+import os
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 
-print(area(3))
+def send_email(sender_email, password, recipient_emails, subject, content, attachment_path=None):
+    # SMTP 서버 설정
+    SMTP_SERVER = "smtp.naver.com"
+    SMTP_PORT = 587
+
+    # 이메일 서버 로그인
+    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    server.starttls()
+    server.login(sender_email, password)
+
+    for recipient_email in recipient_emails:
+        # 이메일 메시지 구성
+        message = MIMEMultipart()
+        message['Subject'] = subject
+        message['From'] = sender_email
+        message['To'] = recipient_email
+
+        # 메일 본문 내용
+        msg_body = MIMEText(content, 'plain', 'utf-8')
+        message.attach(msg_body)
+
+        # 파일 첨부가 가능하다면 파일 첨부
+        if attachment_path and os.path.exists(attachment_path):
+            with open(attachment_path, "rb") as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header(
+                    'Content-Disposition',
+                    'attachment; filename={}'.format(os.path.basename(attachment_path)),
+                )
+                message.attach(part)
+
+        # 이메일 전송
+        server.sendmail(sender_email, recipient_email, message.as_string())
+        st.write(f"이메일을 성공적으로 보냈습니다: {recipient_email}")
+
+    # 이메일 서버 종료
+    server.quit()
+
+# Streamlit 인터페이스
+st.title("이메일 전송 서비스")
+
+# 사용자 인증 정보 입력
+sender_email = st.text_input("송신자 이메일 주소")
+password = st.text_input("비밀번호", type="password")
+
+# 데이터 파일 경로
+excel_path = 'data/email_list.xlsx'
+
+# 메일 본문 선택
+content_option = st.radio("메일 본문 선택 방법", ('텍스트 파일에서 읽기', '직접 작성하기'))
+if content_option == '텍스트 파일에서 읽기':
+    letter_file = st.file_uploader("편지 템플릿 파일 선택", type=['txt'])
+    if letter_file:
+        content = str(letter_file.read(), 'utf-8')
+else:
+    content = st.text_area("메일 본문 직접 작성")
+
+# 첨부 파일 선택
+attachment_file = st.file_uploader("첨부할 파일 선택 (선택 사항)", type=['xlsx'])
+
+if os.path.exists(excel_path):
+    data = pd.read_excel(excel_path, usecols="A,B")  # A열에는 이메일, B열에는 이름
+    options = list(data['Email'])
+    selected_emails = st.multiselect('수신자 이메일 선택', options)
+
+# 메일 전송
+subject = "신간 안내"
+if st.button("이메일 전송"):
+    if sender_email and password and content and selected_emails:
+        send_email(sender_email, password, selected_emails, subject, content, attachment_file.name if attachment_file else None)
+    else:
+        st.error("모든 필수 정보를 입력해 주세요.")
+                
             </code>
-        </pre>            
+        </div>
     </div>
- 
-    <li>다음 코드를 실행하며 어떤 결과가 출력되는지 작성하세요</li>
-    <div class="highlight"> 
-        <pre contenteditable="true" style="white-space: pre-wrap;">
-            <code class="language-python">   
-def cal(a, b, c) :
-    return a * b - c
-
-print(cal(5, 4, 10))
-            </code>
-        </pre>            
-    </div>
-    <div>정답: <input type="text" class="answer"></div>
-
-    <li>다음과 같이 함수가 정의되어 있을 때 함수를 호출하는 코드를 작성하세요</li>
-    <div class="highlight"> 
-        <pre contenteditable="true" style="white-space: pre-wrap;">
-            <code class="language-python">   
-def add(a, b):
-    return a + b
-            </code>
-        </pre>            
-    </div>    
-    <div>정답: <input type="text" class="answer"></div>
-
-    <li>다음 코드를 실행하면 오류가 발생합니다. 그 이유는 무엇인가요?</li>
-    <div class="highlight"> 
-        <pre contenteditable="true" style="white-space: pre-wrap;">
-            <code class="language-python">   
-def wordlist(a, b, c) :
-    for item in [a, b, c] :
-        print(item)
-
-wordlist(['사과','오렌지','포도'])
-            </code>
-        </pre>            
-    </div>    
-    <div>정답: <input type="text" class="answer"></div>
-
-        <li> 두개의 수를 입력받아 곱한 값을 리턴하는 mul 함수를 선언하세요</li>
-        <div class="highlight">
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">
-# 더하기 함수 선언
-def plus(a, b):
-    result = a + b    
-    return result 
-
-print('계산 결과:', plus(2,3))  # 5  
-
-# mul 함수를 선언하세요
 
 
-print('계산 결과:', mul(2,3))   # 6  
-                </code>
-            </pre>
-        </div>
-       
-        <li> 한개의 정수를 입력받아 누적된 합을 리턴하는 sumValue 함수를 선언하세요</li>
-        <div class="highlight">
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">   
-# sumValue 함수를 선언하세요
-
-print('계산 결과:', sumValue(10)) # 55
-                </code>
-            </pre>
-        </div>
-
-        <li>리스트를 입력받아 리스트 항목 중 짝수들의 합을 리턴하는 sumEvenValues 함수를 선언하세요</li>
-        <div class="highlight">
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">   
-# sumEvenValues 함수를 선언하세요
 
 
-# 함수 호출 부분                                   
-scores = [5, 6, 4, 7, 8, 2]                                 
-result = sumEvenValues(scores)                             
-print('계산 결과:', result) #계산 결과: 20
-                </code>
-            </pre>
-        </div>
-
-        <li> 리스트와 기준값을 입력 받아 리스트의 각 항목 중 기준값 이상만 반환하는 filtering 함수를 선언하세요</li>
-        <div class="highlight">
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">
-# filtering 함수를 선언하세요
 
 
-# 함수 호출 부분
-alist = [90, 50, 65, 73, 100, 80]
-criteria = 90
-
-result = filtering(alist, criteria)
-print('반환값: ', result)  # 반환값:  [90, 100]
-                </code>
-            </pre>
-        </div>
-
-        <li> 리스트를 입력받아 중복된 숫자가 없는 리스트로 리턴하는 getUniqueValue 함수를 선언하세요</li>
-        <div class="highlight">
-            <pre contenteditable="true" style="white-space: pre-wrap;">
-                <code class="language-python">
-# getUniqueValue 함수를 선언하세요
 
 
-# 함수 호출 부분
-alist = [1,2,2,3,5,4,3,1]
 
-result = (alist,getUniqueValue(alist))
-print('반환값: ', result)  # 반환값 : [1,2,3,4,5]
-                </code>
-            </pre>
-        </div>
 
-</ol>
+
+
+</div>
+
+<script src="content.js"></script>
+

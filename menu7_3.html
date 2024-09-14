@@ -2,116 +2,105 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">함수 활용</h1>
+<h1 class="title">이메일 자동화 3</h1>
 <div class="faq-container">
-    <div class="faq-section">
-        <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px" >
-            동물원 소리 내기
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-            <pre>
-                <code class="language-python" >   
-# 동물의 소리를 출력하는 함수를 정의합니다.
-def animal_sound(animal):
-    if animal == "고양이":
-        return "야옹"
-    elif animal == "개":
-        return "멍멍"
-    elif animal == "오리":
-        return "꽥꽥"
-    else:
-        return "저는 그 동물의 소리를 모르겠어요!"
-
-# 함수를 호출하여 동물의 소리를 들어봅시다.
-print("고양이가 무슨 소리를 낼까요?")
-print(animal_sound("고양이"))  # 출력: 야옹
-
-print("\n개가 무슨 소리를 낼까요?")
-print(animal_sound("개"))  # 출력: 멍멍
-
-print("\n오리가 무슨 소리를 낼까요?")
-print(animal_sound("오리"))  # 출력: 꽥꽥
-
-print("\n사자가 무슨 소리를 낼까요?")
-print(animal_sound("사자"))  # 출력: 저는 그 동물의 소리를 모르겠어요!
-                </code>
-            </pre>
-        </div>
-    </div>
-    <div class="faq-section">
-        <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px" >
-            과일 주스 바 
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-            <pre>
-                <code class="language-python" >   
-# 과일 주스를 만드는 함수를 정의합니다.
-def make_juice(fruit):
-    juice_menu = {
-        "사과": "사과 주스가 준비되었습니다! 🍎",
-        "오렌지": "오렌지 주스가 준비되었습니다! 🍊",
-        "포도": "포도 주스가 준비되었습니다! 🍇",
-    }
     
-    # 선택한 과일로 주스를 만듭니다.
-    if fruit in juice_menu:
-        return juice_menu[fruit]
-    else:
-        return f"죄송해요, 우리 주스 바에는 {fruit} 주스가 없어요. 다른 과일을 선택해 주세요!"
-
-# 함수를 호출하여 과일 주스를 주문해봅시다.
-print(make_juice("사과"))  # 출력: 사과 주스가 준비되었습니다! 🍎
-print(make_juice("오렌지"))  # 출력: 오렌지 주스가 준비되었습니다! 🍊
-print(make_juice("포도"))  # 출력: 포도 주스가 준비되었습니다! 🍇
-print(make_juice("바나나"))  # 출력: 죄송해요, 우리 주스 바에는 바나나 주스가 없어요. 다른 과일을 선택해 주세요!
-                </code>
-            </pre>
-        </div>
-    </div>
-
-
-  
     <div class="faq-section">
         <div class="faq-question">
-            <img  src="question.png" width="34px" height="34px" >
-            온도 변환기
+            <img src="gpt.png"   width="34px" height="34px" >
+            STEP7
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">
-            <pre>
-                <code class="language-python" >   
-def printOptions():
-    print("'c' 섭씨온도에서 화씨온도로 변환")
-    print("'f' 화씨온도에서 섭씨온도로 변환")
-    print(" 'q' 종료")
+        <div class="faq-answer">            
+            <code id="source-code" class="language-python">
+"""
+위 코드를 attachment_file 에 값이 없어도 동작되도록 수정해주세요
+"""         
+import streamlit as st
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
-def C2F(c_temp):
-    return 9.0 / 5.0 * c_temp + 32
+# SMTP 서버 설정 (예: naver)
+smtp_server = "smtp.naver.com"
+smtp_port = 587
 
-def F2C(f_temp):
-    return (f_temp - 32.0) *5.0 / 9.0
+# 스트림릿 타이틀
+st.title('이메일 발송 애플리케이션')
 
-printOptions()
-choice = input("메뉴에서 선택하세요.")    
-while choice != "q" :
-    if choice == "c":
-        temp = float(input('섭씨온도:'))
-        print('화씨온도:', C2F(temp))
+# 파일 업로드 섹션
+email_file = st.file_uploader("이메일 목록 엑셀 파일을 업로드하세요 (Email, Name 컬럼 필요)", type=['xlsx'])
+text_file = st.file_uploader("이메일 본문 텍스트 파일 업로드", type=['txt'])
+attachment_file = st.file_uploader("첨부 파일 업로드 (선택사항)", type=['xlsx', 'docx', 'pdf'])
 
-    elif choice == 'f':
-        temp = float(input('화씨온도:'))
-        print('섭씨온도:', F2C(temp))
-    printOptions()
-    choice = input("메뉴에서 선택하세요.")                        
-                </code>
-            </pre>
+# 사용자 이메일과 패스워드 입력
+sender_email = st.text_input("송신자 이메일 주소:")
+sender_password = st.text_input("송신자 비밀번호:", type="password")
+
+# 이메일 전송 버튼
+send_email = st.button("이메일 보내기")
+
+if send_email:
+    if email_file and text_file and sender_email and sender_password:
+        try:
+            # 이메일 목록 읽기
+            email_df = pd.read_excel(email_file)
+            # 본문 텍스트 읽기
+            text_body = str(text_file.getvalue(), 'utf-8')
+
+            # SMTP 서버 연결
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(sender_email, sender_password)
+
+            # 이메일 전송
+            for idx, row in email_df.iterrows():
+                message = MIMEMultipart()
+                message["From"] = sender_email
+                message["To"] = row['Email']
+                message["Subject"] = "신간 안내"
+
+                # 메일 본문 설정
+                body = text_body.replace('{name}', row['Name'])
+                message.attach(MIMEText(body, "plain", "utf-8"))
+
+                # 첨부 파일 추가 (만약 존재한다면)
+                if attachment_file is not None:
+                    attachment = attachment_file.read()
+                    part = MIMEApplication(attachment, Name="첨부파일")
+                    part['Content-Disposition'] = 'attachment; filename="{}"'.format(attachment_file.name)
+                    message.attach(part)
+
+                # 이메일 발송
+                server.sendmail(sender_email, row['Email'], message.as_string())
+
+            st.success("이메일이 성공적으로 발송되었습니다.")
+            server.quit()
+
+        except Exception as e:
+            st.error(f"오류가 발생했습니다: {e}")
+
+    else:
+        st.error("모든 필드를 채워주세요!")
+
+            </code>
         </div>
     </div>
 
-</div>    
+
+
+
+
+
+
+
+
+
+
+
+</div>
 
 <script src="content.js"></script>
+
