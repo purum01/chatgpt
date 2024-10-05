@@ -11,8 +11,9 @@
             Text
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+        <div class="faq-answer">        
+            <button class="copy-btn" onclick="copyCode('source-code1')">📋 Copy</button>    
+<pre><code id="source-code1" class="language-python">
 import streamlit as st
 
 # 타이틀 적용 예시
@@ -49,7 +50,7 @@ st.markdown(":green[$\sqrt{x^2+y^2}=1$] 와 같이 latex 문법의 수식 표현
 
 # LaTex 수식 지원
 st.latex(r'\sqrt{x^2+y^2}=1')
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -58,8 +59,9 @@ st.latex(r'\sqrt{x^2+y^2}=1')
             Data
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+        <div class="faq-answer">      
+<button class="copy-btn" onclick="copyCode('source-code2')">📋 Copy</button>                      
+<pre><code id="source-code2" class="language-python">
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -92,7 +94,7 @@ col1, col2, col3 = st.columns(3)
 col1.metric(label="달러USD", value="1,228 원", delta="-12.00 원")
 col2.metric(label="일본JPY(100엔)", value="958.63 원", delta="-7.44 원")
 col3.metric(label="유럽연합EUR", value="1,335.82 원", delta="11.44 원")                
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -101,8 +103,9 @@ col3.metric(label="유럽연합EUR", value="1,335.82 원", delta="11.44 원")
             Covid with Streamlit
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+        <div class="faq-answer">       
+            <button class="copy-btn" onclick="copyCode('source-code3')">📋 Copy</button>                     
+<pre><code id="source-code3" class="language-python">
 """
 위 코드를 streamlit을  사용한 코드를 변경해주세요.
 1. coivd 디렉터리는 사용자 입력을 받음
@@ -158,7 +161,7 @@ if st.button('데이터 처리 및 저장'):
         # 병합된 데이터를 화면에 표시
         st.dataframe(merged_df)
         merged_df.to_excel('2020_Covid_Status.xlsx', index=False)                   
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -168,7 +171,8 @@ if st.button('데이터 처리 및 저장'):
             <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+            <button class="copy-btn" onclick="copyCode('source-code4')">📋 Copy</button>                      
+<pre><code id="source-code4" class="language-python">
 import streamlit as st
 import pandas as pd
 from datetime import datetime as dt
@@ -269,7 +273,7 @@ number = st.number_input(
     step=5
 )
 st.write('당신이 입력하신 나이는:  ', number)
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -279,7 +283,8 @@ st.write('당신이 입력하신 나이는:  ', number)
             <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+            <button class="copy-btn" onclick="copyCode('source-code5')">📋 Copy</button>                      
+<pre><code id="source-code5" class="language-python">
 import streamlit as st
 import random
 import datetime
@@ -303,7 +308,7 @@ if button:
     for i in range(1, 6):
         st.subheader(f'{i}. 행운의 번호: :green[{generate_lotto()}]')
     st.write(f"생성된 시각: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
-            </code>
+</code></pre>
         </div>
     </div>
 
@@ -313,8 +318,9 @@ if button:
             Chart
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+        <div class="faq-answer">    
+            <button class="copy-btn" onclick="copyCode('source-code6')">📋 Copy</button>                      
+<pre><code id="source-code6" class="language-python">
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -363,7 +369,7 @@ ax.set_title('Scores by group and gender')
 ax.legend()
 
 st.pyplot(fig)
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -373,7 +379,8 @@ st.pyplot(fig)
             <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+            <button class="copy-btn" onclick="copyCode('source-code7')">📋 Copy</button>                      
+<pre><code id="source-code7" class="language-python">
 import streamlit as st
 import pandas as pd
 import time
@@ -396,7 +403,7 @@ if file is not None:
         df = pd.read_excel(file, engine='openpyxl')
         # 출력
         st.dataframe(df)                
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -406,7 +413,8 @@ if file is not None:
             <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+            <button class="copy-btn" onclick="copyCode('source-code8')">📋 Copy</button>                      
+<pre><code id="source-code8" class="language-python">
 import streamlit as st
 import FinanceDataReader as fdr
 import datetime
@@ -429,7 +437,7 @@ if code and date:
     df = fdr.DataReader(code, date)
     data = df.sort_index(ascending=True).loc[:, 'Close']
     st.line_chart(data)                
-            </code>
+</code></pre>
         </div>
     </div>
     <div class="faq-section">
@@ -438,8 +446,9 @@ if code and date:
             Stock Chart2
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
+        <div class="faq-answer">
+            <button class="copy-btn" onclick="copyCode('source-code9')">📋 Copy</button>                      
+<pre><code id="source-code9" class="language-python">
 import streamlit as st
 import FinanceDataReader as fdr
 import datetime
@@ -483,8 +492,7 @@ if code and date:
         - Adj Close: 수정 종가
         - Volumn: 거래량
         ''')
-                
-            </code>
+</code></pre>
         </div>
     </div>
     
@@ -493,3 +501,23 @@ if code and date:
 
 <script src="content.js"></script>
 
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+        
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+    </script>
