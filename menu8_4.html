@@ -1,0 +1,193 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+<style>
+    a {
+        color: #0077cc; 
+        font-size: 18px; 
+        text-decoration: none; 
+        font-weight: bold; 
+    }
+    a:hover {
+        color: #0055aa; 
+        text-decoration: underline; 
+    }
+    h1 {
+        color: #2c3e50;
+    }
+    h2 {
+        color: #2980b9;
+    }
+    p {
+        line-height: 1.6;
+    }
+    .example {
+        background-color: #f4f4f4;
+        border-left: 5px solid #2980b9;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    .code {
+        background-color: #eee;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+</style>
+
+<h1 class="title">Chat Completions API</h1>
+<div class="faq-container">
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            OpenAI API 역할
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+            OpenAI API에서 role은 대화의 각 부분이 어떤 역할로 제공되는지를 나타냅니다. role에는 일반적으로 세 가지 주요 값이 있습니다: system, user, assistant. 이 값들은 대화의 흐름을 정의하는 데 사용됩니다.
+            <br/><br/>
+            <p>다음은 각 역할에 대한 설명입니다.</p>
+    
+            <h2>1. System</h2>
+            <p><strong>역할:</strong> 시스템 역할은 모델이 어떻게 동작할지를 설명하는 "설정" 역할입니다.</p>
+            <p><strong>목적:</strong> 대화의 초기 컨텍스트를 설정하고 모델이 응답할 때 따를 규칙이나 지침을 제공합니다.</p>
+            <div class="example">
+                <p><strong>예시:</strong> "You are a helpful assistant."</p>
+                <p><strong>용도:</strong> 모델이 특정 방식으로 행동하도록 안내할 때 사용됩니다.</p>
+            </div>
+        
+            <h2>2. User</h2>
+            <p><strong>역할:</strong> 사용자가 모델에게 질문하거나 요청할 때 사용하는 역할입니다.</p>
+            <p><strong>목적:</strong> 실제로 모델에게 어떤 질문이나 요청을 할 때 사용됩니다. 이 메시지에 대한 응답을 모델이 생성합니다.</p>
+            <div class="example">
+                <p><strong>예시:</strong> "Who won the 2022 FIFA World Cup?"</p>
+                <p><strong>용도:</strong> 사용자가 모델에게 입력하는 모든 요청을 나타냅니다.</p>
+            </div>
+        
+            <h2>3. Assistant</h2>
+            <p><strong>역할:</strong> 모델이 생성하는 응답입니다.</p>
+            <p><strong>목적:</strong> 모델의 답변이 어떤 역할에서 나온 것인지 명시하며, 모델의 응답을 정의하는 데 사용됩니다.</p>
+            <div class="example">
+                <p><strong>예시:</strong> "Argentina won the 2022 FIFA World Cup."</p>
+                <p><strong>용도:</strong> 모델이 생성한 대답이 포함된 메시지에 사용됩니다.</p>
+            </div>
+        
+            <h2>차이점 요약</h2>
+            <ul>
+                <li><strong>System:</strong> 모델에게 기본 지침이나 규칙을 제공하는 역할입니다.</li>
+                <li><strong>Assistant:</strong> 모델이 실제로 생성한 응답을 포함하는 역할입니다.</li>
+            </ul>
+        
+            <h2>예시 대화 흐름</h2>
+            <div class="example">
+                <pre>
+        messages = [
+            {"role": "system", "content": "You are a friendly assistant who answers questions in a polite manner."},
+            {"role": "user", "content": "Which country won the 2022 FIFA World Cup?"},
+            {"role": "assistant", "content": "Argentina won the 2022 FIFA World Cup."}
+        ]
+                </pre>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            Chat Completions Message
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+<pre><code id="source-code" class="language-python">
+    completion = client.chat.completions.create(
+        model = "gpt-4o-mini",                                                     
+        messages =[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Who won the world series in 2020?"},
+        ]
+    )
+    
+    completion.to_dict()
+</code></pre>
+
+<pre>
+{'id': 'chatcmpl-AF7Oa9XyuEAfVydNPyUGrSk3GkAPX',
+ 'choices': [{'finish_reason': 'stop',
+   'index': 0,
+   'logprobs': None,
+   'message': {'content': "The Los Angeles Dodgers won the World Series in 2020. They defeated the Tampa Bay Rays to clinch the title, marking the Dodgers' first championship since 1988.",
+    'role': 'assistant',
+    'refusal': None}}],
+ 'created': 1728166712,
+ 'model': 'gpt-4o-mini-2024-07-18',
+ 'object': 'chat.completion',
+ 'system_fingerprint': 'fp_f85bea6784',
+ 'usage': {'completion_tokens': 36,
+  'prompt_tokens': 27,
+  'total_tokens': 63,
+  'prompt_tokens_details': {'cached_tokens': 0},
+  'completion_tokens_details': {'reasoning_tokens': 0}}}
+</pre>
+
+            <h2>id</h2>
+            <p>이 값은 OpenAI API에서 생성된 고유 식별자입니다. 요청에 대한 응답을 추적하거나 참조할 때 사용될 수 있습니다.</p>
+        
+            <h2>choices</h2>
+            <p>choices는 API의 응답으로 반환된 메시지들입니다. 일반적으로 여러 메시지나 응답이 포함될 수 있으며, 이 경우에는 하나의 응답만 있습니다.</p>
+            <div class="example">
+                <h3>finish_reason: 'stop'</h3>
+                <p>모델이 자연스럽게 응답을 완료했음을 의미합니다. 만약 'length'로 표시된다면 응답이 최대 토큰 길이에 도달하여 중단되었음을 의미합니다.</p>
+        
+                <h3>index: 0</h3>
+                <p>반환된 응답의 순서 또는 위치를 나타냅니다. 여기서는 첫 번째 응답이므로 0입니다.</p>
+        
+                <h3>logprobs: None</h3>
+                <p>logprobs는 출력 확률 로그 정보를 포함할 수 있는 항목입니다. 이 요청에서는 확률 정보가 반환되지 않았습니다.</p>
+        
+                <h3>message</h3>
+                <p>여기에는 응답의 실제 내용과 role이 포함됩니다.</p>
+                <ol>
+                    <li>content : ChatGPT 모델의 응답 내용입니다.</li>
+                    <li>role: 'assistant'  
+                        <p>이 응답이 'assistant'(즉, ChatGPT 모델)의 역할로부터 생성되었음을 나타냅니다.</p>
+                    </li>
+                </ol>
+                
+            </div>
+        
+            <h2>created: 1728166712</h2>
+            <p>이 숫자는 타임스탬프(Unix 시간)를 나타냅니다. 응답이 생성된 시점을 기준으로 한 시간이므로, 특정 시점에 API 응답이 생성되었음을 알 수 있습니다.</p>
+        
+            <h2>model: 'gpt-4o-mini-2024-07-18'</h2>
+            <p>사용된 모델의 이름을 나타냅니다. 여기서는 gpt-4o-mini 모델이 사용되었으며, 특정 날짜에 업데이트된 버전임을 알 수 있습니다.</p>
+        
+            <h2>object: 'chat.completion'</h2>
+            <p>API의 응답 객체 유형을 나타냅니다. 이 경우에는 "chat.completion" 객체로, 이는 대화형 응답 생성의 결과임을 의미합니다.</p>
+        
+            <h2>system_fingerprint: 'fp_f85bea6784'</h2>
+            <p>시스템에서 생성된 응답을 추적하거나 기록하는 데 사용되는 고유한 식별자입니다. 내부적으로 사용되는 정보일 수 있습니다.</p>
+        
+            <h2>usage</h2>
+            <p>이 항목은 API 호출 시 사용된 토큰 수를 나타냅니다. 토큰은 텍스트를 처리하는 기본 단위입니다.</p>
+            <div class="example">
+                <h3>completion_tokens: 36</h3>
+                <p>모델이 생성한 응답 텍스트에 사용된 토큰 수입니다. 즉, 답변에 총 36개의 토큰이 사용되었습니다.</p>
+        
+                <h3>prompt_tokens: 27</h3>
+                <p>API에 제공된 입력 텍스트(시스템 메시지와 사용자 질문)에 사용된 토큰 수입니다.</p>
+        
+                <h3>total_tokens: 63</h3>
+                <p>completion_tokens와 prompt_tokens를 합한 총 토큰 수입니다.</p>
+        
+                <h3>prompt_tokens_details와 completion_tokens_details:</h3>
+                <p>각 토큰의 세부 사항을 기록한 항목입니다. cached_tokens는 캐시된 토큰의 수를 나타내며, 여기서는 0입니다. completion_tokens_details의 reasoning_tokens는 응답 생성 중 사용된 추론 토큰을 나타내는데, 여기서는 0으로 표시되어 있습니다.</p>
+            </div>            
+        </div>
+    </div>
+
+</div>
+
+<script src="content.js"></script>
+
