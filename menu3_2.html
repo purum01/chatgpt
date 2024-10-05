@@ -36,42 +36,25 @@
         </div>
         <div class="faq-answer">            
             <code id="source-code" class="language-python">
-import pandas as pd
 import os
-import glob
+import pandas as pd
 
-# covid 디렉토리에서 모든 csv 파일 목록을 가져옴
-csv_files = glob.glob('covid/*.csv')
+PATH = 'covid/'
+file_list = os.listdir(PATH)
+first_doc = True
 
-# 병합된 데이터를 저장할 빈 데이터프레임 생성
-merged_df = pd.DataFrame()
-
-for file in csv_files:
-    # 파일에서 'Country_Region', 'Confirmed' 컬럼만 읽어옴
-    df = pd.read_csv(file, usecols=['Country_Region', 'Confirmed'])
-    
-    # 'Country_Region'별로 그룹핑하고 'Confirmed'의 합계를 구함
-    grouped_df = df.groupby('Country_Region', as_index=False).sum()
-    
-    # 파일 이름에서 확장자를 제거하고 '-'를 '/'로 변경함
-    column_name = os.path.basename(file).replace('.csv', '').replace('-', '/')
-    # 'Confirmed' 컬럼 이름을 변경함
-    grouped_df.columns = ['Country_Region', column_name]
-    
-    # 병합된 데이터프레임에 현재 데이터프레임을 병합함
-    if merged_df.empty:
-        merged_df = grouped_df
+for file in file_list:
+    doc = pd.read_csv(PATH+file)
+    doc = doc[['Country_Region', 'Confirmed']]
+    doc = doc.groupby('Country_Region').sum()
+    date_column = file.split(".")[0].lstrip('0').replace('-', '/') 
+    doc.columns = [date_column]
+    if first_doc:
+        final_doc, first_doc = doc, False
     else:
-        merged_df = pd.merge(merged_df, grouped_df, on='Country_Region', how='outer')
+        final_doc = pd.merge(final_doc, doc, how='outer', left_index=True, right_index=True)
 
-# NaN 값을 0으로 채움
-merged_df.fillna(0, inplace=True)
-
-# 병합된 데이터를 Excel 파일로 저장함
-merged_df.to_excel('2020_Covid_Status.xlsx', index=False)
-
-print("Excel 파일이 성공적으로 생성되었습니다.")
-                
+final_doc.to_excel('covid_2020.xlsx')
             </code>
         </div>
     </div>
