@@ -101,6 +101,10 @@
         </div>
         <div class="faq-answer">            
 <pre><code id="source-code" class="language-python">
+    from openai import OpenAI
+    
+    client = OpenAI()
+
     completion = client.chat.completions.create(
         model = "gpt-4o-mini",                                                     
         messages =[
@@ -110,6 +114,7 @@
     )
     
     completion.to_dict()
+    
 </code></pre>
 
 <pre>
