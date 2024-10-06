@@ -66,7 +66,7 @@ def main():
             llm = ChatOpenAI(temperature=0,
                     openai_api_key=st.session_state["OPENAI_API"],
                     max_tokens=2000,
-                    model_name='gpt-3.5-turbo',
+                    model_name='gpt-4o-mini',
                     request_timeout=120
                     )
             chain = load_qa_chain(llm, chain_type="stuff")
