@@ -2,6 +2,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
+<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button> 
 <code id="source-code" class="language-python">
 #################  Streamlit 사용하여 PDF 기반 답변하기  ###################
 
@@ -80,4 +81,23 @@ if __name__=='__main__':
     main()
 </code>                
 
-
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+        
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+</script>
