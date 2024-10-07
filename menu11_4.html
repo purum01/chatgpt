@@ -1,63 +1,59 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />   
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">파일 합치기</h1>   
-
-<div class="subtitle"> ChatGPT 질문</div>
-    <div>
-        <pre>
-다음과 같은 내용으로 구현된 파이썬 코드를 생성해주세요
-# 제목
-2020년 Covid 현황
-
-#조건
-1.  covid 디렉토리에 있는 모든 csv 파일이 작업 대상임
-2. 각 파일에서  'Country_Region', 'Confirmed' 컬럼만 추출함
-3. 'Country_Region' 컬럼의 값은 중복되면 안됨, 여러개가 있는 경우 그룹핑하고 'Confirmed' 컬럼 값의 합계를 구함
-4. 'Confirmed'  컬러명은 파일이름에서 확장자를 제외한 이름으로 변경함. 이때 '-'는 '/'로 변경함
-5. 각 파일들은 'Country_Region' 컬럼을 기준으로 병합함
-6. 병합한 내용을 Excel 파일로 저장함
-        </pre>
-<div class="subtitle"> ChatGPT 답변</div>           
-        <pre>
-            <code class="language-python">
-import pandas as pd
-import os
-import glob
-
-# covid 디렉토리에서 모든 csv 파일 목록을 가져옴
-csv_files = glob.glob('covid/*.csv')
-
-# 병합된 데이터를 저장할 빈 데이터프레임 생성
-merged_df = pd.DataFrame()
-
-for file in csv_files:
-    # 파일에서 'Country_Region', 'Confirmed' 컬럼만 읽어옴
-    df = pd.read_csv(file, usecols=['Country_Region', 'Confirmed'])
+<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>    
+<code id="source-code" class="language-python">
+    #################  PDF 기반 답변하기 ###################
+    from PyPDF2 import PdfReader
+    from langchain_text_splitters import CharacterTextSplitter
+    from langchain_openai import OpenAIEmbeddings
+    from langchain_community.vectorstores import FAISS
+    from langchain_openai import ChatOpenAI
+    from langchain.chains.question_answering import load_qa_chain
     
-    # 'Country_Region'별로 그룹핑하고 'Confirmed'의 합계를 구함
-    grouped_df = df.groupby('Country_Region', as_index=False).sum()
+    pdf_reader = PdfReader('Summary of ChatGPTGPT-4 Research.pdf')
+    total_text = ""
+    for page in pdf_reader.pages:
+        total_text += page.extract_text()
+    text_spliter = CharacterTextSplitter(
+        separator='\n',
+        chunk_size = 1000,
+        chunk_overlap = 200,
+        length_function = len,
+    )
+    chunks = text_spliter.split_text(total_text)
+    embedding_model = OpenAIEmbeddings()
+    knowledge_base =   FAISS.from_texts(chunks, embedding_model)
+    doc = knowledge_base.similarity_search("where can I use ChatGPT")
+    llm = ChatOpenAI()
+    chain = load_qa_chain(llm, chain_type="stuff")
+    resp = chain.invoke(input={
+        "input_documents" : doc,
+        "question" : "where can I use ChatGPT"
+    }
+    )
+    print(resp['output_text'])
     
-    # 파일 이름에서 확장자를 제거하고 '-'를 '/'로 변경함
-    column_name = os.path.basename(file).replace('.csv', '').replace('-', '/')
-    # 'Confirmed' 컬럼 이름을 변경함
-    grouped_df.columns = ['Country_Region', column_name]
+        
+</code>
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
     
-    # 병합된 데이터프레임에 현재 데이터프레임을 병합함
-    if merged_df.empty:
-        merged_df = grouped_df
-    else:
-        merged_df = pd.merge(merged_df, grouped_df, on='Country_Region', how='outer')
-
-# NaN 값을 0으로 채움
-merged_df.fillna(0, inplace=True)
-
-# 병합된 데이터를 Excel 파일로 저장함
-merged_df.to_excel('2020_Covid_Status.xlsx', index=False)
-
-print("Excel 파일이 성공적으로 생성되었습니다.")
-            </code>
-        </pre>
-    </div>
-   
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+        
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+    </script>
