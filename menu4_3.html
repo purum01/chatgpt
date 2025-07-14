@@ -414,29 +414,112 @@ import streamlit as st
 import FinanceDataReader as fdr
 import datetime
 
-# Finance Data Reader
-# https://github.com/financedata-org/FinanceDataReader
+# 사이트 제목과 설명 추가
+st.title("주식 종가 차트 조회")
+st.write("원하는 종목코드와 시작일을 입력하면, 해당 주식의 종가 차트를 확인할 수 있습니다.")
+
+# KOSPI TOP 10 종목코드 목록
+top10 = {
+    "삼성전자": "005930",
+    "SK하이닉스": "000660",
+    "삼성전자우": "005935",
+    "LG에너지솔루션": "373220",
+    "삼성바이오로직스": "207940",
+    "현대차": "005380",
+    "POSCO홀딩스": "005490",
+    "NAVER": "035420",
+    "기아": "000270",
+    "카카오": "035720"
+}
 
 date = st.date_input(
     "조회 시작일을 선택해 주세요",
-    datetime.datetime(2024, 1, 1)
+    datetime.datetime(2025, 7, 1)
 )
 
-code = st.text_input(
-    '종목코드', 
-    value='',
-    placeholder='종목코드를 입력해 주세요'
+code = st.selectbox(
+    '종목코드(KOSPI TOP 10)', 
+    options=list(top10.values()),
+    format_func=lambda x: [k for k, v in top10.items() if v == x][0]
 )
 
 if code and date:
     df = fdr.DataReader(code, date)
-    data = df.sort_index(ascending=True).loc[:, 'Close']
-    st.line_chart(data)                
+    st.dataframe(df)
+    data = df.loc[:, 'Close']
+    st.line_chart(data)           
 </code></pre>
         </div>
     </div>
-    
-    
+    <div class="faq-section">
+        <div class="faq-question">
+            <img src="gpt.png"   width="34px" height="34px" >
+            부서별 업무시간 대시보드
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">            
+            <button class="copy-btn" onclick="copyCode('source-code8')">📋 Copy</button>                      
+<pre><code id="source-code8" class="language-python">  
+import streamlit as st
+import pandas as pd
+from datetime import date
+
+st.set_page_config(page_title="부서별 업무시간 대시보드", layout="wide")
+
+st.title("🕒 부서별 업무시간 기록 및 시각화")
+
+# 초기 데이터 파일
+DATA_FILE = "worklog.csv"
+
+# 1. 입력 폼
+st.subheader("📋 업무시간 입력")
+
+with st.form("worklog_form"):
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        name = st.text_input("이름", placeholder="홍길동")
+    with col2:
+        dept = st.selectbox("부서", ["개발팀", "마케팅팀", "디자인팀", "인사팀", "경영지원팀"])
+    with col3:
+        work_date = st.date_input("날짜", date.today())
+
+    hours = st.slider("업무 시간 (시간 단위)", 0.0, 12.0, 8.0, 0.5)
+    submitted = st.form_submit_button("저장하기")
+
+    if submitted:
+        new_record = pd.DataFrame({
+            "이름": [name],
+            "부서": [dept],
+            "날짜": [work_date],
+            "업무시간": [hours]
+        })
+
+        try:
+            old_data = pd.read_csv(DATA_FILE)
+            df = pd.concat([old_data, new_record], ignore_index=True)
+        except FileNotFoundError:
+            df = new_record
+
+        df.to_csv(DATA_FILE, index=False)
+        st.success("✅ 업무 기록이 저장되었습니다.")
+
+# 2. 데이터 로드 및 시각화
+st.subheader("📈 부서별 업무시간 분석")
+
+try:
+    df = pd.read_csv(DATA_FILE)
+    df["날짜"] = pd.to_datetime(df["날짜"])
+    st.dataframe(df.sort_values("날짜", ascending=False))
+
+    pivot = df.pivot_table(index="부서", values="업무시간", aggfunc="mean")
+    st.bar_chart(pivot)
+except FileNotFoundError:
+    st.info("⛔ 아직 저장된 업무기록이 없습니다.")
+
+</code></pre>
+        </div>
+    </div>    
 </div>
 
 <script src="content.js"></script>
