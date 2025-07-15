@@ -116,7 +116,13 @@
                     <li onclick="event.stopPropagation(); showContent('menu8_3');">회의록 자동 요약</li>
                 </ul>             
             </li>
-            <li id="menu9" onclick="event.stopPropagation(); showContent('menu9_1')">9. 광고문구 자동 생성하기</li>
+            <li id="menu9" onclick="toggleNested(this)">9. 메시지 분석과 생성하기
+                <ul class="nested">
+                    <li onclick="event.stopPropagation(); showContent('menu9_1');">광고문구 자동생성하기</li>                        
+                    <li onclick="event.stopPropagation(); showContent('menu9_2');">비즈니스 인사이트 도출하기</li>
+                </ul>
+
+            </li>
 
             <li id="menu10" onclick="toggleNested(this)">10. 유튜브 내용 요약하기
                 <ul class="nested">
