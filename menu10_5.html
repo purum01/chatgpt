@@ -1,0 +1,88 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+
+<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>  
+<code id="source-code" class="language-python">
+#################  뉴스 요약하기 ###################
+import streamlit as st
+from langchain_community.document_loaders import WebBaseLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import PromptTemplate
+from langchain.chains.summarize import load_summarize_chain
+
+st.set_page_config(page_title="뉴스 요약기")
+st.title("📰 뉴스 기사 요약기")
+
+article_url = st.text_input("뉴스 기사 URL을 입력하세요")
+api_key = st.text_input("OpenAI API 키를 입력하세요", type="password")
+
+if st.button("요약 생성"):
+    if not article_url or not api_key:
+        st.error("URL과 API 키를 모두 입력해주세요.")
+    else:
+        try:
+            # 웹페이지에서 본문 텍스트 불러오기
+            loader = WebBaseLoader(article_url)
+            documents = loader.load()
+
+            # 텍스트 분할
+            splitter = RecursiveCharacterTextSplitter(chunk_size=3000, chunk_overlap=100)
+            split_docs = splitter.split_documents(documents)
+
+            # LLM 모델 설정
+            llm = ChatOpenAI(
+                temperature=0,
+                openai_api_key=api_key,
+                model="gpt-4o-mini",
+                request_timeout=120
+            )
+
+            # 요약용 프롬프트 (명령문으로 수정)
+            map_prompt = PromptTemplate(
+                template="다음 뉴스 기사 내용을 간결하게 요약하라:\n```{text}```",
+                input_variables=["text"]
+            )
+            combine_prompt = PromptTemplate(
+                template="다음은 뉴스 기사 조각들의 요약이다:\n```{text}```\n이 내용을 7~9문장으로 종합 요약하라.",
+                input_variables=["text"]
+            )
+
+            # 체인 구성 및 실행
+            chain = load_summarize_chain(
+                llm,
+                chain_type="map_reduce",
+                map_prompt=map_prompt,
+                combine_prompt=combine_prompt
+            )
+            summary = chain.invoke(split_docs)
+
+            st.success("요약 결과:")
+            st.write(summary["output_text"])
+
+        except Exception as e:
+            st.error(f"오류 발생: {e}")
+
+
+</code>
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+        
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+</script>

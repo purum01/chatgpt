@@ -1,236 +1,112 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />   
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-<h1 class="title">숫자 맞추기 게임 만들기</h1>   
+<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button> 
+<code id="source-code" class="language-python">
+################# SmartWorkBot: 텍스트 문서 기반 챗봇 #################
 
-    <div>
-        <pre>
-파이썬으로 숫자 맞추기 게임을 만들거야 1~100까지 무작위 숫자를 생성하고 
-내가 숫자를 입력하면 무작위 숫자랑 비교해서 숫자가 큰지 작은지 알려줘, 
-숫자를 맞추면 몇 회만에 맞추었는지 알려주고 게임을 종료해
-        </pre>
+import streamlit as st
+from langchain.text_splitter import CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.chains.question_answering import load_qa_chain
 
-        <pre>
-            <code class="language-python">
-import random
+st.set_page_config(page_title="📘 SmartWorkBot - 문서 챗봇", layout="wide")
+st.title("🤖 SmartWorkBot")
+st.write("사내 업무 텍스트 문서를 기반으로 질문하고 답변을 받아보세요.")
 
-def 숫자_맞추기_게임():
-    # 1에서 100까지의 무작위 숫자 생성
-    정답 = random.randint(1, 100)
+# 🔐 API 키 입력
+openai_api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
+
+# 📄 텍스트 문서 업로드 (.txt)
+uploaded_file = st.file_uploader("📁 사내 텍스트 문서를 업로드하세요 (.txt)", type="txt")
+
+# 예시 질문
+example_questions = [
+    "연차는 며칠 전에 신청해야 하나요?",
+    "재택근무는 얼마나 자주 가능한가요?",
+    "출장비는 언제까지 정산해야 하나요?",
+    "보안 교육은 꼭 들어야 하나요?",
+    "근무 시간은 어떻게 되나요?"
+]
+
+# ✅ 세션 상태 초기화
+if "selected_question" not in st.session_state:
+    st.session_state.selected_question = ""
+
+if uploaded_file and openai_api_key:
+    with st.spinner("📚 문서 분석 중입니다..."):
+
+        # 텍스트 읽기
+        raw_text = uploaded_file.read().decode("utf-8")
+
+        # 텍스트 분할
+        text_splitter = CharacterTextSplitter(
+            separator="\n",
+            chunk_size=1000,
+            chunk_overlap=200,
+            length_function=len,
+        )
+        chunks = text_splitter.split_text(raw_text)
+
+        # 임베딩 생성
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+        knowledge_base = FAISS.from_texts(chunks, embeddings)
+
+    st.markdown("---")
+
+    # 📌 예시 질문 보기 형식으로 표시
+    st.subheader("📌 예시 질문 목록 (클릭하면 자동 입력됩니다)")
+    cols = st.columns(2)
+    for i, q in enumerate(example_questions):
+        if cols[i % 2].button(f"👉 {q}"):
+            st.session_state.selected_question = q
+
+    # 질문 입력창
+    question = st.text_input("📨 질문을 입력하세요",
+                             value=st.session_state.selected_question,
+                             key="question_input")
+
+    if question:
+        # 유사 문서 검색
+        docs = knowledge_base.similarity_search(question)
+
+        # GPT 호출
+        llm = ChatOpenAI(openai_api_key=openai_api_key, temperature=0.2)
+        chain = load_qa_chain(llm, chain_type="stuff")
+
+        with st.spinner("🧠 답변 생성 중..."):
+            response = chain.invoke({
+                "input_documents": docs,
+                "question": question
+            })
+
+            st.markdown("### 💡 답변")
+            st.write(response["output_text"])
+
+        # 선택된 질문 초기화
+        st.session_state.selected_question = ""
+
+</code>                
+
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
     
-    회수 = 0
-
-    while True:
-        # 사용자로부터 숫자 입력 받기
-        사용자_입력 = int(input("1에서 100 사이의 숫자를 입력하세요: "))
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
         
-        # 시도 회수 증가
-        회수 += 1
-
-        # 입력한 숫자와 정답 비교
-        if 사용자_입력 == 정답:
-            print(f"축하합니다! {회수}회 만에 숫자를 맞추셨습니다.")
-            break
-        elif 사용자_입력 < 정답:
-            print("입력한 숫자가 작습니다. 다시 시도해보세요.")
-        else:
-            print("입력한 숫자가 큽니다. 다시 시도해보세요.")
-
-# 게임 실행
-숫자_맞추기_게임()
-                
-            </code>
-        </pre>
-    </div>
-
-<h1 class="title">컴퓨터의 외부 및 내부 IP 확인 </h1>   
-    <div>
-        <pre>
-파이썬으로 컴퓨터의 내부 IP를 확인하는 코드를 작성해줘
-        </pre>
-        <pre>
-            <code class="language-python">
-import socket
-
-def get_internal_ip():
-    try:
-        # 호스트명을 얻어와서 내부 IP 주소를 확인
-        internal_ip = socket.gethostbyname(socket.gethostname())
-        return internal_ip
-    except socket.error:
-        return "Unable to get internal IP"
-
-if __name__ == "__main__":
-    internal_ip = get_internal_ip()
-    print("Internal IP Address:", internal_ip)
-            </code>
-        </pre>
-    </div>               
-
-<h1 class="title">텍스트를 음성으로 변환</h1> 
-    <div>
-        <pre>
-파이썬을 이용해서 한글 테스트를 한글 음성으로 변환하는 코드를 작성해줘, 무료로 사용할 수 있는 라이브러리를 사용해줘
-        </pre>
-        
-        <pre>
-            <code class="language-python">
-# pip install gtts
-from gtts import gTTS
-import os
-
-def text_to_speech(text, lang='ko'):
-    tts = gTTS(text=text, lang=lang, slow=False)
-    tts.save("output.mp3")
-    os.system("start output.mp3")  # 윈도우에서는 이 명령어로 mp3 파일을 실행합니다.
-
-if __name__ == "__main__":
-    input_text = "안녕하세요. 파이썬을 이용해서 한글 텍스트를 음성으로 변환하는 예제입니다."
-    text_to_speech(input_text)
-            </code>
-        </pre>
-    </div>               
-
-
-
-<h1 class="title">QR 코드 생성기</h1> 
-    <div>
-        <pre>
-파이썬으로 QR 코드를 생성하는 코드를 작성해줘
-        </pre>
-        <pre>
-            <code class="language-python">
-# pip install qrcode
-import qrcode
-
-def generate_qr_code(data, file_name="qrcode.png"):
-    # QR 코드 생성
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(data)
-    qr.make(fit=True)
-
-    # QR 코드 이미지 생성
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    # 이미지 저장
-    img.save(file_name)
-
-if __name__ == "__main__":
-    # 생성할 QR 코드에 입력될 데이터
-    data_to_encode = "https://www.example.com"
-
-    # QR 코드 생성 및 저장
-    generate_qr_code(data_to_encode)
-            </code>
-        </pre>
-    </div>               
-
-
-
-<h1 class="title">컴퓨터의 정보 확인</h1> 
-    <div>
-        <pre>
-파이썬으로 CPU, RAM, 네트워크의 사용량을 1초마다 출력하는 프로그램을 작성해줘
-        </pre>
-        <pre>
-            <code class="language-python">
-# pip install psutil
-import psutil
-import time
-
-def monitor_system_resources():
-    while True:
-        # CPU 사용량 가져오기
-        cpu_percent = psutil.cpu_percent(interval=1)
-
-        # 메모리 사용량 가져오기
-        memory_info = psutil.virtual_memory()
-        used_memory_percent = memory_info.percent
-
-        # 네트워크 사용량 가져오기
-        network_info = psutil.net_io_counters()
-        bytes_sent = network_info.bytes_sent
-        bytes_received = network_info.bytes_recv
-
-        # 결과 출력
-        print(f"CPU 사용량: {cpu_percent}%")
-        print(f"메모리 사용량: {used_memory_percent}%")
-        print(f"전송된 데이터: {bytes_sent} bytes")
-        print(f"수신된 데이터: {bytes_received} bytes")
-        print("\n" + "="*30 + "\n")
-
-        # 1초마다 갱신
-        time.sleep(1)
-
-if __name__ == "__main__":
-    monitor_system_resources()
-            </code>
-        </pre>
-    </div>               
-
-<h1 class="title">파일 압축 프로그램 </h1>
-    <div>
-        <pre>
-C:\test\image 폴더에 있는 모든 파일들을  압축하는 파이썬 프로그램을 만들어줘
-        </pre>
-        <pre>
-            <code class="language-python">
-import os
-import zipfile
-
-def zip_files_in_folder(folder_path, zip_file_path):
-    with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-        for foldername, subfolders, filenames in os.walk(folder_path):
-            for filename in filenames:
-                file_path = os.path.join(foldername, filename)
-                arcname = os.path.relpath(file_path, folder_path)
-                zipf.write(file_path, arcname)
-
-if __name__ == "__main__":
-    folder_path = r'C:\test\image'
-    zip_file_path = r'C:\test\image.zip'
-
-    zip_files_in_folder(folder_path, zip_file_path)
-    print(f'압축이 완료되었습니다. 압축 파일 경로: {zip_file_path}')
-            </code>
-        </pre>
-    </div>               
-
-
-<h1 class="title">이메일 수집 </h1>
-    <div>
-        <pre>
-파이썬으로 웹페이지에서 이메일을 수집하는 코드를 작성해줘            
-        </pre>        
-        <pre>
-            <code class="language-python">
-import requests
-from bs4 import BeautifulSoup
-import re
-
-def extract_emails(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # 정규표현식을 사용하여 이메일 주소 추출
-    email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
-    emails = re.findall(email_pattern, soup.get_text())
-
-    return emails
-
-# 웹사이트 URL을 넣어주세요
-website_url = 'https://v.daum.net/v/20230303140011566'
-extracted_emails = extract_emails(website_url)
-
-print("Extracted emails:")
-for email in extracted_emails:
-    print(email)
-            </code>
-        </pre>
-
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+</script>
