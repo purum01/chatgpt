@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartWorkBot 실습 퀴즈</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h2 { color: #003366; }
+    .question {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .answer {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 SmartWorkBot 실습 퀴즈</h1>
+  <h2>✅ 기초 문제</h2>
+
+  <div class="question">
+    <b>1. CharacterTextSplitter의 역할은 무엇인가?</b><br>
+    <label><input type="radio" name="q1"> A. 텍스트를 요약해주는 역할</label><br>
+    <label><input type="radio" name="q1"> B. 텍스트를 질문과 답변 쌍으로 바꾸는 역할</label><br>
+    <label><input type="radio" name="q1"> C. 긴 텍스트를 잘게 나누어 임베딩에 적합하게 만드는 역할</label><br>
+    <label><input type="radio" name="q1"> D. 문서를 번역해주는 역할</label><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">✅ 정답: C</div>
+  </div>
+
+  <div class="question">
+    <b>2. 문서 분석이 수행되기 위한 조건으로 옳은 것은?</b><br>
+    <label><input type="radio" name="q2"> A. uploaded_file만 있으면 된다</label><br>
+    <label><input type="radio" name="q2"> B. openai_api_key만 있으면 된다</label><br>
+    <label><input type="radio" name="q2"> C. 둘 다 있어야 한다</label><br>
+    <label><input type="radio" name="q2"> D. 아무 조건 없이 항상 수행된다</label><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">✅ 정답: C</div>
+  </div>
+
+  <h2>✅ 중급 문제</h2>
+
+  <div class="question">
+    <b>3. 예시 질문을 클릭하면 입력창에 반영되는 Streamlit 기능은?</b><br>
+    <label><input type="radio" name="q3"> A. st.selectbox</label><br>
+    <label><input type="radio" name="q3"> B. st.session_state</label><br>
+    <label><input type="radio" name="q3"> C. st.slider</label><br>
+    <label><input type="radio" name="q3"> D. st.markdown</label><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">✅ 정답: B</div>
+  </div>
+
+  <div class="question">
+    <b>4. GPT가 답변 생성에 사용하는 체인의 방식은?</b><br>
+    <label><input type="radio" name="q4"> A. map_reduce</label><br>
+    <label><input type="radio" name="q4"> B. refine</label><br>
+    <label><input type="radio" name="q4"> C. stuff</label><br>
+    <label><input type="radio" name="q4"> D. simple</label><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">✅ 정답: C</div>
+  </div>
+
+  <div class="question">
+    <b>5. 문서 기반 벡터 검색을 담당하는 객체는?</b><br>
+    <label><input type="radio" name="q5"> A. ChatOpenAI</label><br>
+    <label><input type="radio" name="q5"> B. load_qa_chain</label><br>
+    <label><input type="radio" name="q5"> C. OpenAIEmbeddings</label><br>
+    <label><input type="radio" name="q5"> D. FAISS.from_texts(...)</label><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">✅ 정답: D</div>
+  </div>
+
+  <h2>✅ 심화 문제</h2>
+
+  <div class="question">
+    <b>6. 문서 요약 기능을 추가해보세요</b><br>
+    문서 업로드 후 질문하지 않아도 문서 전체 요약을 먼저 출력하도록 코드를 확장하세요.<br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">
+      💡 힌트: `load_summarize_chain()` 사용 후 `chain.invoke(docs)` 실행
+    </div>
+  </div>
+
+  <div class="question">
+    <b>7. PDF 업로드도 지원하도록 수정해보세요</b><br>
+    `.txt` 외에 `.pdf`도 업로드 가능하도록 수정하고, 텍스트 추출 기능을 추가해보세요.<br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">
+      💡 힌트: `PyPDF2` 또는 `pdfplumber`를 사용하여 `.pdf` 파일에서 텍스트 추출
+    </div>
+  </div>
+
+  <div class="question">
+    <b>8. 유사 문서 검색 결과 개수를 출력하도록 수정해보세요</b><br>
+    예: <code>총 4개의 관련 문서를 기반으로 답변합니다.</code><br>
+    <button onclick="showAnswer(this)">정답 보기</button>
+    <div class="answer">
+      💡 힌트: <code>len(docs)</code> 사용 후 <code>st.write(f"총 {len(docs)}개의 관련 문서를 기반으로 답변합니다.")</code>
+    </div>
+  </div>
+
+  <script>
+    function showAnswer(button) {
+      const answerDiv = button.nextElementSibling;
+      answerDiv.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
