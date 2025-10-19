@@ -2,67 +2,174 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
 
-
+<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>  
 <code id="source-code" class="language-python">
-    
-#################  Streamlit 사용하여 유튜브 내용 요약하기  ###################
+#################  PDF 내용 요약하기 ###################
+"""
+PyPDFLoader
+https://python.langchain.com/docs/integrations/document_loaders/pypdfloader/
 
-#  https://www.youtube.com/watch?v=Pn-W41hC764
+PyPDFLoader 를 사용하여 PDF 파일에서 본문 텍스트를 불러오고,
+RecursiveCharacterTextSplitter 로 텍스트를 분할한 후,
+LangChain의 요약 체인을 사용하여 PDF 내용을 요약하는 예제.
+- Loader → Splitter → LLM → map_reduce
+"""
 
-import streamlit as st
 import os
-from langchain_community.document_loaders import YoutubeLoader
+import glob
+from typing import List
+
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 
-# Set up the Streamlit interface
-st.title("YouTube Video Summarizer")
-youtube_url = st.text_input("Enter the YouTube URL")
-api_key = st.text_input("Enter your OpenAI API Key", type="password")
 
-# This part handles the video display
-if youtube_url:
-    st.video(youtube_url)
+# ===== 사용자 설정(코드 내에서 지정) =====
+TARGET_PATH = "./data/[2025]Pregnancy Outcomes After Transvaginal Radiofrequency Ablation of Leiomyomas.pdf"               # 요약할 PDF 파일 경로(단일 .pdf) 또는 폴더 경로
+MODEL_NAME = "gpt-4o-mini"           # OpenAI 모델명
+CHUNK_SIZE = 4000                    # 청크 크기
+CHUNK_OVERLAP = 0                    # 청크 오버랩
+SAVE_PATH = "summary.txt"            # 결과 저장 경로(저장하지 않으려면 None)
+# =====================================
 
-if st.button("Summarize Video"):
-    if not youtube_url or not api_key:
-        st.error("Please provide both a YouTube URL and an OpenAI API key.")
+
+def load_pdfs(path: str) -> List:
+    """
+    path가 파일이면 그 파일만, 폴더면 폴더 내의 모든 PDF를 로드한다.
+    각 PDF는 페이지 단위 Document 리스트로 로드되며, 모두 합쳐 반환한다.
+    """
+    documents = []
+
+    def load_one(pdf_path: str):
+        loader = PyPDFLoader(pdf_path)
+        return loader.load()  # 페이지별 Document 리스트
+
+    if os.path.isdir(path):
+        pdf_paths = sorted(glob.glob(os.path.join(path, "*.pdf")))
+        if not pdf_paths:
+            raise FileNotFoundError(f"폴더 내 PDF 파일을 찾지 못했다: {path}")
+        for p in pdf_paths:
+            documents.extend(load_one(p))
     else:
-        try:
-            # Load the transcript from the YouTube video
-            loader = YoutubeLoader.from_youtube_url(youtube_url)
-            transcript = loader.load()
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"경로가 존재하지 않는다: {path}")
+        if not path.lower().endswith(".pdf"):
+            raise ValueError("PDF 파일(.pdf) 또는 PDF 폴더 경로를 입력해야 한다.")
+        documents.extend(load_one(path))
 
-            # Split the transcript into manageable parts
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=0)
-            text = text_splitter.split_documents(transcript)
+    return documents
 
-            # Set up the LLM model
-            llm = ChatOpenAI(temperature=0, openai_api_key=api_key, max_tokens=3000, model="gpt-4o-mini", request_timeout=120)
 
-            # Set up prompts for summarization
-            prompt = PromptTemplate(
-                template="""Summarize the YouTube video whose transcript is provided within backticks ```{text}```""",
-                input_variables=["text"]
-            )
-            combine_prompt = PromptTemplate(
-                template="""Combine all the YouTube video transcripts provided within backticks ```{text}```
-                            Provide a concise summary between 8 to 10 sentences.""",
-                input_variables=["text"]
-            )
+def build_chain(api_key: str, model: str = "gpt-4o-mini"):
+    """
+    temperature=0, max_tokens=3000, map_reduce 체인 구성(map/combined 프롬프트 커스텀)
+    """
+    llm = ChatOpenAI(
+        temperature=0,
+        openai_api_key=api_key,
+        max_tokens=3000,
+        model=model,
+        request_timeout=120,
+    )
 
-            # Execute the summarization chain
-            chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=False, map_prompt=prompt, combine_prompt=combine_prompt)
-            result = chain.invoke(text)
+    map_prompt = PromptTemplate(
+        template=(
+            "Summarize the following PDF chunk. "
+            "Focus on *key points, terms, data, and conclusions*. "
+            "Keep it concise and factual.\n\n```{text}```"
+        ),
+        input_variables=["text"],
+    )
 
-            # Display the summary
-            st.write(result['output_text'])
+    combine_prompt = PromptTemplate(
+        template=(
+            "Combine the following partial summaries of a PDF into a single coherent summary. "
+            "Provide a concise summary in 8 to 10 sentences, preserving structure (topic → details → implications). "
+            "If the text includes sections or headings, reflect them briefly.\n\n```{text}```"
+        ),
+        input_variables=["text"],
+    )
 
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+    chain = load_summarize_chain(
+        llm,
+        chain_type="map_reduce",
+        verbose=False,
+        map_prompt=map_prompt,
+        combine_prompt=combine_prompt,
+    )
+    return chain
 
+
+def summarize_pdf(
+    path: str,
+    chunk_size: int = 4000,
+    chunk_overlap: int = 0,
+    model: str = "gpt-4o-mini",
+) -> str:
+    """
+    PDF(들)를 불러와 문서 단위로 chunking 후 map_reduce 요약을 수행한다.
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise EnvironmentError("OPENAI_API_KEY 환경 변수가 설정되어 있지 않다.")
+
+    # 1) Load
+    documents = load_pdfs(path)
+
+    # 2) Split
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=["\n\n", "\n", " ", ""],  # PDF 특성상 줄바꿈을 먼저 기준으로 분할
+    )
+    chunks = splitter.split_documents(documents)
+
+    # 3) Chain
+    chain = build_chain(api_key=api_key, model=model)
+
+    # 4) Summarize
+    result = chain.invoke(chunks)
+    return result["output_text"]
+
+
+if __name__ == "__main__":
+    summary = summarize_pdf(
+        path=TARGET_PATH,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        model=MODEL_NAME,
+    )
+
+    if SAVE_PATH:
+        with open(SAVE_PATH, "w", encoding="utf-8") as f:
+            f.write(summary)
+        print(f"[INFO] 요약 결과 저장 완료: {SAVE_PATH}")
+    else:
+        print("\n===== PDF Summary =====\n")
+        print(summary)
+
+
+   
 </code>
+<script>
+    function copyCode(elementId) {
+        // 해당 요소의 텍스트를 선택하고 복사합니다.
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
     
-    
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+        
+        // 선택 해제
+        selection.removeAllRanges();
+    }
+</script>

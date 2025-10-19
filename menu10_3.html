@@ -4,39 +4,76 @@
 
 <button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>  
 <code id="source-code" class="language-python">
-    #################  유튜브 내용 요약하기 ###################
+#################  웹페이지 요약하기 ###################
+"""
+WebBaseLoader
+https://python.langchain.com/docs/integrations/document_loaders/web_base/
 
-    import os
-    from langchain_community.document_loaders import YoutubeLoader
-    from langchain.text_splitter import RecursiveCharacterTextSplitter 
-    from langchain_openai import ChatOpenAI
-    from langchain_core.prompts import PromptTemplate
-    from langchain.chains.summarize import load_summarize_chain
-    
-    URL = "https://www.youtube.com/watch?v=Pn-W41hC764"
-    loader = YoutubeLoader.from_youtube_url(URL)
-    transcript = loader.load()
-    
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=0)
-    text = text_splitter.split_documents(transcript)
-    
-    api_key = os.getenv('OPENAI_API_KEY') 
-    llm = ChatOpenAI(temperature=0, openai_api_key=api_key, max_tokens=3000, model="gpt-4o-mini", request_timeout=120)
-    
-    # 각각의 chunck 를 요약하기
-    prompt = PromptTemplate(
-        template="""Summarize the youtube video whose transcript is provided within backticks  ```{text}``` """, input_variables=["text"]
-    )
-    
-    # 요약된 내용들을 취합하여 다시한번 요약하기
-    combine_prompt = PromptTemplate(
-        template="""Combine all the youtube video transcripts  provided within backticks  ```{text}```
-                    Provide a concise summary between 8 to 10 sentences. """, input_variables=["text"]
-    )
-    
-    chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=False, map_prompt=prompt, combine_prompt=combine_prompt)
-    result = chain.invoke(text)
-    print(result['output_text'])
+WebBaseLoader 를 사용하여 웹페이지에서 본문 텍스트를 불러오고,
+RecursiveCharacterTextSplitter 로 텍스트를 분할한 후,
+LangChain의 요약 체인을 사용하여 뉴스를 요약하는 Streamlit 앱.
+"""
+# https://edition.cnn.com/2025/07/15/politics/epstein-conspiracy-bondi-trump-analysis
+
+import streamlit as st
+from langchain_community.document_loaders import WebBaseLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import PromptTemplate
+from langchain.chains.summarize import load_summarize_chain
+
+st.set_page_config(page_title="뉴스 요약기")
+st.title("📰 뉴스 기사 요약기")
+
+article_url = st.text_input("뉴스 기사 URL을 입력하세요")
+api_key = st.text_input("OpenAI API 키를 입력하세요", type="password")
+
+if st.button("요약 생성"):
+    if not article_url or not api_key:
+        st.error("URL과 API 키를 모두 입력해주세요.")
+    else:
+        try:
+            # 웹페이지에서 본문 텍스트 불러오기
+            loader = WebBaseLoader(article_url)
+            documents = loader.load()
+
+            # 텍스트 분할
+            splitter = RecursiveCharacterTextSplitter(chunk_size=3000, chunk_overlap=100)
+            split_docs = splitter.split_documents(documents)
+
+            # LLM 모델 설정
+            llm = ChatOpenAI(
+                temperature=0,
+                openai_api_key=api_key,
+                model="gpt-4o-mini",
+                request_timeout=120
+            )
+
+            # 요약용 프롬프트 (명령문으로 수정)
+            map_prompt = PromptTemplate(
+                template="다음 뉴스 기사 내용을 간결하게 요약하라:\n```{text}```",
+                input_variables=["text"]
+            )
+            combine_prompt = PromptTemplate(
+                template="다음은 뉴스 기사 조각들의 요약이다:\n```{text}```\n이 내용을 7~9문장으로 종합 요약하라.",
+                input_variables=["text"]
+            )
+
+            # 체인 구성 및 실행
+            chain = load_summarize_chain(
+                llm,
+                chain_type="map_reduce",
+                map_prompt=map_prompt,
+                combine_prompt=combine_prompt
+            )
+            summary = chain.invoke(split_docs)
+
+            st.success("요약 결과:")
+            st.write(summary["output_text"])
+
+        except Exception as e:
+            st.error(f"오류 발생: {e}")
+
    
 </code>
 <script>
