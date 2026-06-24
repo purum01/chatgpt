@@ -4,43 +4,42 @@
 
 <button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>    
 <code id="source-code" class="language-python">
-    #################  회의록 자동 요약하기 ###################
+#################  회의록 자동 요약하기 ###################    
+import streamlit as st
+import openai
 
-    import streamlit as st
-    import openai
-    
-    def askGpt(prompt,apikey):
-        client = openai.OpenAI(api_key = apikey)
-        response = client.chat.completions.create(
-                            model="gpt-4o-mini",
-                            messages=[{"role": "user", "content": prompt}])
-        gptResponse = response.choices[0].message.content
-        return gptResponse
-    
-    def main():
-        st.set_page_config(page_title="회의록 요약")
-        # session state 초기화
-        if "OPENAI_API" not in st.session_state:
-            st.session_state["OPENAI_API"] = ""
-    
-        # 사이드바
-        with st.sidebar:
-            # Open AI API 키 입력받기
-            open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')    
-            if open_apikey:
-                st.session_state["OPENAI_API"] = open_apikey
-            st.markdown('---')
-    
-        st.header("📃회의록 요약 프로그램")
+def askGpt(prompt,apikey):
+    client = openai.OpenAI(api_key = apikey)
+    response = client.chat.completions.create(
+                        model="gpt-5.4-nano",
+                        messages=[{"role": "user", "content": prompt}])
+    gptResponse = response.choices[0].message.content
+    return gptResponse
+
+def main():
+    st.set_page_config(page_title="회의록 요약")
+    # session state 초기화
+    if "OPENAI_API" not in st.session_state:
+        st.session_state["OPENAI_API"] = ""
+
+    # 사이드바
+    with st.sidebar:
+        # Open AI API 키 입력받기
+        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')    
+        if open_apikey:
+            st.session_state["OPENAI_API"] = open_apikey
         st.markdown('---')
-        
-        transcript = st.text_area("요약 할 회의록을 입력하세요", height=300  )
-        if st.button("요약"):
-            prompt =f"Summarize the following meeting transcript:\n\n{transcript}"
-            st.info(askGpt(prompt,st.session_state["OPENAI_API"]))
+
+    st.header("📃회의록 요약 프로그램")
+    st.markdown('---')
     
-    if __name__=="__main__":
-        main()
+    transcript = st.text_area("요약 할 회의록을 입력하세요", height=300  )
+    if st.button("요약"):
+        prompt =f"Summarize the following meeting transcript:\n\n{transcript}"
+        st.info(askGpt(prompt,st.session_state["OPENAI_API"]))
+
+if __name__=="__main__":
+    main()
     
 </code>
 <script>
@@ -62,4 +61,4 @@
         // 선택 해제
         selection.removeAllRanges();
     }
-    </script>
+</script>
