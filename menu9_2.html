@@ -11,8 +11,6 @@ from openai import OpenAI
 import os
 
 
-os.getenv("OPENAI_API_KEY")
-
 st.set_page_config(page_title="Steve Jobs Speech Lab", layout="wide")
 st.title("🎤 Steve Jobs 연설문 분석")
 st.write("OpenAI API 기반 실습 예제입니다.")
@@ -48,12 +46,12 @@ if uploaded_file:
             # 1차 API 호출 – 원문 분석
             client = OpenAI()
             completion = client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-5.4-nano",
                 messages=[
                     {"role": "system", "content": system_prompt[task]},
                     {"role": "user", "content": user_prompt[task]}
                 ],
-                temperature=0.7
+                
             )
 
             english_result = completion.choices[0].message.content
@@ -61,13 +59,13 @@ if uploaded_file:
             # 2차 API 호출 – 한글 번역
             translation_prompt = f"Please translate the following English text into natural Korean:\n\n{english_result}"
             translation_response = client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-5.4-nano",
                 messages=[
                     {"role": "system", "content": "You're a professional English to Korean translator."},
                     {"role": "user", "content": translation_prompt}
                 ],
-                temperature=0.5
             )
+            
 
             korean_result = translation_response.choices[0].message.content
 
@@ -83,7 +81,7 @@ if uploaded_file:
 
 else:
     st.warning("💡 먼저 .txt 파일 형식의 연설문을 업로드하세요.")
-        
+
 </code>
 <script>
     function copyCode(elementId) {
