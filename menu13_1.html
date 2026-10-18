@@ -1,72 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-    a {
-        color: #0077cc; 
-        text-decoration: none; 
-        font-weight: bold; 
-    }
-    a:hover {
-        color: red; 
-        text-decoration: underline; 
-    } 
-</style>
-<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('a').attr('target', '_blank');
-    });
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  body {
+    font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    padding: 28px 20px 48px;
+  }
+
+  h1.page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+  }
+  .page-subtitle {
+    font-size: 0.92rem;
+    color: #64748b;
+    margin-bottom: 28px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.06);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,.12), 0 8px 28px rgba(0,0,0,.09);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  /* 섹션별 아이콘 배경색 */
+  .ic-setup    { background: #dbeafe; }
+  .ic-streamlit{ background: #fce7f3; }
+  .ic-openai   { background: #d1fae5; }
+  .ic-langchain{ background: #fef3c7; }
+  .ic-rag      { background: #ede9fe; }
+  .ic-audio    { background: #ffedd5; }
+
+  ul.link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  ul.link-list li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #334155;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  ul.link-list li a:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+  ul.link-list li a::before {
+    content: "→";
+    font-size: 0.75rem;
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .badge-new  { background:#dcfce7; color:#166534; }
+  .badge-key  { background:#fef9c3; color:#854d0e; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">📚 참조 사이트</h1>
+<p class="page-subtitle">강의 실습 시 참고할 공식 문서 및 주요 링크 모음</p>
+
+<div class="grid">
+
+  <!-- 시작하기 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-setup">🚀</div>
+      <div class="card-title">시작하기</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="http://naver.me/5eUYclrc" target="_blank">수업파일 다운로드 <span class="badge badge-key">필수</span></a></li>
+      <li><a href="https://www.anaconda.com/download" target="_blank">Anaconda (파이썬) 설치</a></li>
+      <li><a href="https://code.visualstudio.com/" target="_blank">VS Code 설치</a></li>
+      <li><a href="https://chatgpt.com/" target="_blank">ChatGPT</a></li>
+      <li><a href="https://platform.openai.com/" target="_blank">OpenAI Platform</a></li>
+    </ul>
+  </div>
+
+  <!-- Streamlit -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-streamlit">🎈</div>
+      <div class="card-title">Streamlit</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="https://streamlit.io/" target="_blank">Streamlit 공식 홈</a></li>
+      <li><a href="https://docs.streamlit.io/develop/api-reference" target="_blank">Streamlit API 레퍼런스</a></li>
+      <li><a href="https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/" target="_blank">이모지 단축코드 목록</a></li>
+      <li><a href="https://docs.streamlit.io/develop/concepts/architecture/session-state" target="_blank">Session State</a></li>
+      <li><a href="https://github.com/financedata-org/FinanceDataReader" target="_blank">Finance Data Reader</a></li>
+    </ul>
+  </div>
+
+  <!-- OpenAI API -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-openai">🤖</div>
+      <div class="card-title">OpenAI API</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="https://developers.openai.com/api/docs/models" target="_blank">모델 목록 (Models)</a></li>
+      <li><a href="https://platform.openai.com/api-keys" target="_blank">API Key 발급 <span class="badge badge-key">필수</span></a></li>
+      <li><a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank">API Billing (크레딧 충전)</a></li>
+      <li><a href="https://openai.com/api/pricing/" target="_blank">API Pricing (요금표)</a></li>
+      <li><a href="https://platform.openai.com/tokenizer" target="_blank">Token 계산기</a></li>
+      <li><a href="https://developers.openai.com/api/docs/guides/embeddings" target="_blank">Embeddings 가이드</a></li>
+    </ul>
+  </div>
+
+  <!-- LangChain -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-langchain">🦜</div>
+      <div class="card-title">LangChain</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="https://python.langchain.com/" target="_blank">LangChain 공식 홈</a></li>
+      <li><a href="https://python.langchain.com/docs/integrations/chat/openai/" target="_blank">ChatOpenAI</a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/prompts/langchain_core.prompts.chat.ChatPromptTemplate.html" target="_blank">ChatPromptTemplate</a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/prompts/langchain_core.prompts.prompt.PromptTemplate.html" target="_blank">PromptTemplate</a></li>
+      <li><a href="https://python.langchain.com/docs/integrations/document_loaders/" target="_blank">Document Loaders</a></li>
+      <li><a href="https://python.langchain.com/docs/integrations/document_loaders/youtube_transcript/" target="_blank">YouTube Transcript Loader</a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/character/langchain_text_splitters.character.RecursiveCharacterTextSplitter.html" target="_blank">RecursiveCharacterTextSplitter</a></li>
+      <li><a href="https://python.langchain.com/api_reference/langchain/chains/langchain.chains.summarize.chain.load_summarize_chain.html" target="_blank">Summarization Chain</a></li>
+    </ul>
+  </div>
+
+  <!-- RAG / 벡터 DB -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-rag">🗄️</div>
+      <div class="card-title">RAG / 벡터 DB</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="https://python.langchain.com/docs/integrations/document_loaders/pypdfloader/" target="_blank">PyPDFLoader <span class="badge badge-new">NEW</span></a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.faiss.FAISS.html" target="_blank">FAISS VectorStore</a></li>
+      <li><a href="https://faiss.ai/" target="_blank">FAISS 공식 홈</a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/embeddings/langchain_openai.embeddings.base.OpenAIEmbeddings.html" target="_blank">OpenAIEmbeddings API</a></li>
+      <li><a href="https://python.langchain.com/docs/integrations/text_embedding/openai/" target="_blank">OpenAIEmbeddings Doc</a></li>
+      <li><a href="https://api.python.langchain.com/en/latest/chains/langchain.chains.retrieval_qa.base.RetrievalQA.html" target="_blank">RetrievalQA <span class="badge badge-new">NEW</span></a></li>
+      <li><a href="https://docs.trychroma.com/" target="_blank">Chroma DB</a></li>
+    </ul>
+  </div>
+
+  <!-- 음성 (STT / TTS) -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ic-audio">🎙️</div>
+      <div class="card-title">음성 — STT / TTS</div>
+    </div>
+    <ul class="link-list">
+      <li><a href="https://developers.openai.com/api/docs/guides/speech-to-text" target="_blank">Whisper (Speech-to-Text)</a></li>
+      <li><a href="https://developers.openai.com/api/docs/guides/text-to-speech" target="_blank">OpenAI TTS (Text-to-Speech) <span class="badge badge-new">NEW</span></a></li>
+      <li><a href="https://developers.openai.com/api/docs/models/whisper-1" target="_blank">Whisper 모델 상세</a></li>
+      <li><a href="https://gtts.readthedocs.io/en/latest" target="_blank">gTTS (Google TTS)</a></li>
+      <li><a href="https://pypi.org/project/streamlit-audiorecorder/" target="_blank">streamlit-audiorecorder</a></li>
+      <li><a href="https://pypi.org/project/youtube-transcript-api/" target="_blank">youtube-transcript-api</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  // 모든 링크를 새 탭에서 열기 (이미 target="_blank"가 있지만 동적 콘텐츠 대비)
+  document.querySelectorAll('a').forEach(function(a) {
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+  });
 </script>
 
-<table>
-    <tr><td><h2>시작하기</h2></td></tr>
-    <tr><td><a href="http://naver.me/5eUYclrc">수업파일 다운로드</a></td></tr>
-    <tr><td><a href="https://anaconda.org/">파이썬 설치</a></td></tr> 
-    <tr><td><a href="https://code.visualstudio.com/">VSCode 설치</a></td></tr>
-    <tr><td><a href="https://chatgpt.com/">ChatGPT</a></td></tr>
-
-    <tr><td><h2>Streamlit</h2></td></tr>
-    <tr><td><a href="https://streamlit.io/">Streamlit HOME</a></td></tr>
-    <tr><td><a href="https://docs.streamlit.io/develop/api-reference">Streamlit API</a></td></tr>
-    <tr><td><a href="https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/">특수 이모티콘</a></td></tr>
-    <tr><td><a href="https://github.com/financedata-org/FinanceDataReader">Finance Data Reader</a></td></tr>
-
-    <tr><td><h2>OpenAI API</h2></td></tr>
-    <tr><td><a href="https://platform.openai.com/docs/overview">OpenAI API HOME</a></td></tr>
-    <tr><td><a href="https://platform.openai.com/api-keys">OpenAI API Key 발급</a></td></tr>
-    <tr><td><a href="https://openai.com/pricing#language-models">OpenAI API Pricing</a></td></tr>
-    <tr><td><a href="https://platform.openai.com/settings/organization/billing/overview">OpenAI API Billing</a></td></tr>
-    <tr><td><a href="https://platform.openai.com/tokenizer">OpenAI API token 확인</a></td></tr>
-
-    <tr><td><h2>LangChain</h2></td></tr>
-    <tr><td><a href="https://python.langchain.com/">LangChain HOME</a></td></tr>
-    <tr><td><a href="https://python.langchain.com/docs/integrations/platforms/">LangChain Components</a></td></tr>
-    <tr><td><a href="https://python.langchain.com/docs/integrations/chat/openai/">ChatOpenAI</a></td></tr>
-    <tr><td><a href="https://api.python.langchain.com/en/latest/prompts/langchain_core.prompts.chat.ChatPromptTemplate.html#langchain-core-prompts-chat-chatprompttemplate">
-        ChatPromptTemplate
-    </a></td></tr>
-    <tr><td><a href="https://api.python.langchain.com/en/latest/prompts/langchain_core.prompts.prompt.PromptTemplate.html#" >
-        PromptTemplate
-    </a></td></tr>
-    <tr><td><a href="https://python.langchain.com/docs/integrations/document_loaders/">Document loaders</a></td></tr>
-    <tr><td><a href="https://python.langchain.com/docs/integrations/document_loaders/youtube_transcript/">YouTube transcripts</a></td></tr>
-    <tr><td><a href="https://api.python.langchain.com/en/latest/character/langchain_text_splitters.character.RecursiveCharacterTextSplitter.html#langchain-text-splitters-character-recursivecharactertextsplitter">RecursiveCharacterTextSplitter¶</a></td></tr>
-    <tr><td><a href="https://python.langchain.com/api_reference/langchain/chains/langchain.chains.summarize.chain.load_summarize_chain.html">Summarization</a></td></tr>
-
-    <tr><td><h2>Chain Bot</h2></td></tr>
-    <tr><td><a href="https://platform.openai.com/docs/guides/embeddings/use-cases">embedding</a></td></tr>
-    <tr><td><a href="https://faiss.ai/">Faiss</a></td></tr>
-    <tr><td><a href="https://python.langchain.com/docs/integrations/text_embedding/openai/">OpenAIEembeddings Doc</a></td></tr>
-    <tr><td><a href="https://api.python.langchain.com/en/latest/embeddings/langchain_openai.embeddings.base.OpenAIEmbeddings.html">OpenAIEembeddings API</a></td></tr>
-
-    <tr><td><h2>Audio-Text</h2></td></tr>
-    <tr><td><a href="https://gtts.readthedocs.io/en/latest">gTTS</a></td></tr>
-    <tr><td><a href="https://platform.openai.com/docs/guides/speech-to-text/quickstart">Whisper</a></td></tr>
-    <tr><td><a href="https://pypi.org/project/streamlit-audiorecorder/">streamlit-audiorecorder</a></td></tr>
-
-
-</table>
-
-
-
-
-
+</body>
+</html>

@@ -1,18 +1,13 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+﻿<div class="title">연설문 분석하기</div>
+<div class="subtitle">.txt 파일을 업로드하면 AI가 요약·질문 생성·감정 분석·연설문 생성을 수행하고 한글로 번역합니다. API를 두 번 호출하는 패턴을 학습합니다.</div>
 
-<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>    
-<code id="source-code" class="language-python">
-#################  텍스트 요약, 키워드 추출, 감정 분석, 질문 생성, 토픽 분류 ###################
-
-import streamlit as st
+<div class="code-wrap">
+<pre><code class="language-python">import streamlit as st
 from openai import OpenAI
-import os
 
 
 st.set_page_config(page_title="Steve Jobs Speech Lab", layout="wide")
-st.title("🎤 Steve Jobs 연설문 분석")
+st.title("연설문 분석")
 st.write("OpenAI API 기반 실습 예제입니다.")
 
 # 파일 업로드
@@ -29,6 +24,7 @@ if uploaded_file:
     if st.button("🚀 실행"):
         with st.spinner("OpenAI API 요청 중..."):
 
+            # 영어 프롬프트는 한국어보다 응답 품질이 높은 경우가 많아 영어로 작성했습니다
             system_prompt = {
                 "요약 및 핵심 메시지": "You're an expert summarizer of motivational speeches.",
                 "질문 생성": "You're a professional facilitator who creates discussion questions from speeches.",
@@ -43,63 +39,38 @@ if uploaded_file:
                 "나만의 연설문 생성": f"Write a motivational speech for professionals facing career burnout. Use Steve Jobs's tone and structure as inspiration.\n\nReference Speech:\n{text}"
             }
 
+            # api_key를 지정하지 않으면 환경변수 OPENAI_API_KEY 값을 자동으로 읽어옵니다
             # 1차 API 호출 – 원문 분석
             client = OpenAI()
-            completion = client.chat.completions.create(
-                model="gpt-5.4-nano",
-                messages=[
-                    {"role": "system", "content": system_prompt[task]},
-                    {"role": "user", "content": user_prompt[task]}
-                ],
-                
+            completion = client.responses.create(
+                model="gpt-6-luna",
+                instructions=system_prompt[task],
+                input=user_prompt[task],
             )
 
-            english_result = completion.choices[0].message.content
+            english_result = completion.output_text
 
             # 2차 API 호출 – 한글 번역
             translation_prompt = f"Please translate the following English text into natural Korean:\n\n{english_result}"
-            translation_response = client.chat.completions.create(
-                model="gpt-5.4-nano",
-                messages=[
-                    {"role": "system", "content": "You're a professional English to Korean translator."},
-                    {"role": "user", "content": translation_prompt}
-                ],
+            translation_response = client.responses.create(
+                model="gpt-6-luna",
+                instructions="You're a professional English to Korean translator.",
+                input=translation_prompt,
             )
-            
 
-            korean_result = translation_response.choices[0].message.content
+            korean_result = translation_response.output_text
 
         st.success("✅ 분석 및 번역 완료!")
 
         tab1, tab2 = st.tabs(["🇺🇸 English Output", "🇰🇷 한글 번역"])
 
         with tab1:
-            st.text_area("English Output", english_result, height=400)
+            st.markdown(english_result)
 
         with tab2:
-            st.text_area("한글 번역 결과", korean_result, height=400)
+            st.markdown(korean_result)
 
 else:
     st.warning("💡 먼저 .txt 파일 형식의 연설문을 업로드하세요.")
-
-</code>
-<script>
-    function copyCode(elementId) {
-        // 해당 요소의 텍스트를 선택하고 복사합니다.
-        var codeElement = document.getElementById(elementId);
-        var range = document.createRange();
-        range.selectNodeContents(codeElement);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-    
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            alert('복사에 실패했습니다.');
-        }
-        
-        // 선택 해제
-        selection.removeAllRanges();
-    }
-    </script>
+</code></pre>
+</div>

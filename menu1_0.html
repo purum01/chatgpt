@@ -1,10 +1,234 @@
-<div class="faq-container">
-    <table align="center">
-        <tr><td><img src="image/14.png" width="100%" height="100%"></td></tr>
-        <tr><td><img src="image/15.PNG" width="100%" height="100%"></td></tr>
-        <tr><td><img src="image/16.PNG" width="100%" height="100%"></td></tr>
-        <tr><td><img src="image/17.PNG" width="100%" height="100%"></td></tr>
-        <tr><td><img src="image/18.PNG" width="100%" height="100%"></td></tr>
-    </table>
-</div>
+<style>
+.co-wrap {
+  max-width: 760px;
+  padding: 4px 0 40px;
+}
 
+.co-header {
+  margin-bottom: 32px;
+}
+.co-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+  margin: 0 0 6px;
+}
+.co-header p {
+  font-size: 14px;
+  color: var(--mute, #6b7280);
+  margin: 0;
+}
+
+/* ── stage card ── */
+.stage-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-left: 4px solid var(--brand, #03c75a);
+  border-radius: 10px;
+  padding: 26px 28px 28px;
+  margin-bottom: 18px;
+}
+
+.stage-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.stage-num {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--brand, #03c75a);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+.stage-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+  margin: 0;
+}
+
+.stage-desc {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text, #1a1a1a);
+  margin: 0 0 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.stage-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+@media (max-width: 560px) {
+  .stage-cols { grid-template-columns: 1fr; gap: 18px; }
+}
+
+.col-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent, #00893a);
+  margin: 0 0 10px;
+}
+.stage-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.stage-list li {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text, #1a1a1a);
+  padding-left: 14px;
+  position: relative;
+}
+.stage-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  background: var(--brand, #03c75a);
+  border-radius: 50%;
+}
+
+.stage-card {
+  transition: box-shadow .18s, transform .18s;
+}
+.stage-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.09);
+  transform: translateY(-2px);
+}
+
+.stage-card code {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12.5px;
+  font-family: Consolas, 'D2Coding', monospace;
+  color: #1a1a1a;
+}
+
+.stage-arrow {
+  text-align: center;
+  font-size: 22px;
+  color: var(--brand, #03c75a);
+  margin: -6px 0 4px;
+  line-height: 1;
+  user-select: none;
+}
+</style>
+
+<div class="co-wrap">
+  <div class="co-header">
+    <h1>업무자동화</h1>
+    <p>ChatGPT와 Python을 활용한 3단계 업무 자동화</p>
+  </div>
+
+  <!-- 1단계 -->
+  <div class="stage-card">
+    <div class="stage-head">
+      <div class="stage-num">1</div>
+      <h2 class="stage-title">ChatGPT 웹사이트에서 자동화 작업</h2>
+    </div>
+    <p class="stage-desc">별도의 개발 환경 없이 <b>ChatGPT 웹사이트(chatgpt.com)</b>에 직접 접속하여 업무를 자동화하는 방법을 배웁니다.</p>
+    <div class="stage-cols">
+      <div>
+        <p class="col-label">주요 학습 내용</p>
+        <ul class="stage-list">
+          <li>프롬프트 작성법 — 원하는 결과를 얻는 질문 전략</li>
+          <li>파일 업로드 &amp; 분석 — CSV, PDF, 이미지 등 업로드 후 데이터 처리</li>
+          <li>반복 업무 처리 — 문서 초안 작성, 요약, 번역, 분류 등</li>
+          <li>코드 생성 &amp; 디버깅 — Python 코드를 ChatGPT에게 작성·수정 요청</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-label">특징</p>
+        <ul class="stage-list">
+          <li>가입만 하면 즉시 사용 가능 — 코딩 지식 불필요</li>
+          <li>가장 빠르게 업무에 적용할 수 있는 방법</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage-arrow">↓</div>
+
+  <!-- 2단계 -->
+  <div class="stage-card">
+    <div class="stage-head">
+      <div class="stage-num">2</div>
+      <h2 class="stage-title">OpenAI API 키로 자동화 작업</h2>
+    </div>
+    <p class="stage-desc"><b>OpenAI API 키</b>를 발급받아 Python 코드에서 ChatGPT를 직접 호출하여 더 강력하고 반복 가능한 자동화를 구현합니다.</p>
+    <div class="stage-cols">
+      <div>
+        <p class="col-label">주요 학습 내용</p>
+        <ul class="stage-list">
+          <li>API 키 발급 및 환경 설정</li>
+          <li><code>openai</code> 라이브러리 설치 및 기본 사용법</li>
+          <li>Chat Completions API 호출 — 메시지 송수신 구조 이해</li>
+          <li>실전 자동화 — 공문 자동 생성, 회의록 요약, 광고 문구 생성 등</li>
+          <li>Streamlit으로 간단한 웹 앱 만들기</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-label">특징</p>
+        <ul class="stage-list">
+          <li>Python 코드로 ChatGPT 기능을 자유롭게 제어</li>
+          <li>대량의 데이터를 자동으로 처리하는 배치 작업 구현 가능</li>
+          <li>사용한 만큼만 과금 (Pay-as-you-go)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage-arrow">↓</div>
+
+  <!-- 3단계 -->
+  <div class="stage-card">
+    <div class="stage-head">
+      <div class="stage-num">3</div>
+      <h2 class="stage-title">LangChain으로 자동화 작업</h2>
+    </div>
+    <p class="stage-desc"><b>LangChain</b> 프레임워크를 활용하여 문서 기반 질문응답(RAG), 음성 처리, 챗봇 등 더 복잡한 AI 파이프라인을 구축합니다.</p>
+    <div class="stage-cols">
+      <div>
+        <p class="col-label">주요 학습 내용</p>
+        <ul class="stage-list">
+          <li>LangChain 기본 구조 — Chain, Prompt, Model, Memory</li>
+          <li>문서 요약 자동화 — YouTube, 웹사이트, PDF 내용 요약</li>
+          <li>임베딩 &amp; 벡터 DB — 문서를 숫자로 변환하여 FAISS에 저장·검색</li>
+          <li>RAG — PDF·문서 기반 질문응답 시스템 구축</li>
+          <li>사내 업무 챗봇 제작 — 회사 문서를 학습시킨 AI 비서</li>
+          <li>음성 비서 프로그램 — 문자↔음성 변환(TTS/STT) 연동</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-label">특징</p>
+        <ul class="stage-list">
+          <li>단순 API 호출을 넘어 복합적인 AI 워크플로우 구성</li>
+          <li>외부 데이터(문서, 웹, DB)를 AI와 연결하는 구조 이해</li>
+          <li>실무 수준의 AI 애플리케이션 개발 가능</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>

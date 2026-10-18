@@ -1,189 +1,695 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>파이썬</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
-    .container {
-        display: flex;
-        height: 100%;
-    }
-    .side-menu {
-        width: 15%;
-        background-color: #f0f0f0;
-        padding: 20px;
-    }
-    .content {
-        width: 75%;
-        padding: 20px;
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    li {
-        margin-bottom: 10px;
-        cursor: pointer;
-    }
-    #menu > li:hover {
-        font-weight: bold;
-        background-color: gray;
-    }
-    .nested {
-        margin-left: 20px;
-        display: none;
-    }
-    .nested > li:hover {
-        font-weight: bold;
-        color:white;
-    }
-    .active {
-        display: block;
-    }
-</style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<link rel="stylesheet"  href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatGPT 업무 자동화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js" defer></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+<style>
+/* ── tokens ── */
+:root {
+  --brand:       #03c75a;
+  --accent:      #00893a;
+  --accent-soft: #eafaf1;
+  --bg:          #f5f6f7;
+  --surface:     #ffffff;
+  --text:        #1a1a1a;
+  --mute:        #6b7280;
+  --border:      #e5e7eb;
+  --side-w:      260px;
+  --font:        'Noto Sans KR', sans-serif;
+  --mono:        'IBM Plex Mono', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:          #0f1117;
+    --surface:     #1a1d27;
+    --text:        #e8eaf0;
+    --mute:        #9ca3af;
+    --border:      #2d3140;
+    --accent-soft: #0d2318;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:          #0f1117;
+  --surface:     #1a1d27;
+  --text:        #e8eaf0;
+  --mute:        #9ca3af;
+  --border:      #2d3140;
+  --accent-soft: #0d2318;
+}
 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text);
+  border-top: 4px solid var(--brand);
+}
+
+/* ── layout ── */
+.wrap {
+  display: grid;
+  grid-template-columns: var(--side-w) minmax(0, 1fr);
+  min-height: calc(100vh - 4px);
+}
+
+/* ── sidebar ── */
+nav.side {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 4px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+nav.side::-webkit-scrollbar { width: 4px; }
+nav.side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.nav-top {
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.nav-top h1 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.nav-top h1 span {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--mute);
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+
+.nav-body { flex: 1; padding: 6px 0; }
+
+/* ── accordion chapter ── */
+.ch-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  gap: 8px;
+  transition: background .15s;
+}
+.ch-btn:hover { background: var(--bg); }
+.ch-btn.open { color: var(--accent); }
+.ch-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mute);
+  min-width: 18px;
+  background: var(--border);
+  border-radius: 3px;
+  text-align: center;
+  padding: 1px 4px;
+  flex-shrink: 0;
+}
+.ch-btn.open .ch-num { background: var(--accent-soft); color: var(--accent); }
+.ch-arrow {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--mute);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.ch-btn.open .ch-arrow { transform: rotate(180deg); color: var(--accent); }
+
+/* single item (no sub-list) */
+.ch-btn.solo {
+  font-weight: 500;
+  color: var(--mute);
+}
+.ch-btn.solo:hover { color: var(--text); }
+.ch-btn.solo.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--brand);
+  font-weight: 500;
+}
+
+.sub-list {
+  display: none;
+  list-style: none;
+  padding: 2px 0 6px 0;
+}
+.ch-btn.open + .sub-list { display: block; }
+
+.sub-list li a {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px 6px 36px;
+  text-decoration: none;
+  color: var(--mute);
+  font-size: 12.5px;
+  transition: all .12s;
+  line-height: 1.4;
+}
+.sub-list li a:hover { background: var(--bg); color: var(--text); }
+.sub-list li a.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--brand);
+  font-weight: 500;
+}
+
+.nav-owner {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--mute);
+  line-height: 1.9;
+  flex-shrink: 0;
+}
+.nav-owner a { color: var(--accent); text-decoration: none; font-size: 11.5px; }
+.nav-owner a:hover { text-decoration: underline; }
+
+/* ── main ── */
+main {
+  background: var(--bg);
+  min-height: calc(100vh - 4px);
+  padding: 32px 40px;
+}
+#content { max-width: 860px; }
+
+/* ── cover ── */
+.cover-wrap { text-align: center; padding: 20px 0; }
+.cover-wrap img { max-width: 100%; border-radius: 10px; }
+
+/* ── page title ── */
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.subtitle { font-size: 14px; color: var(--mute); margin-bottom: 20px; }
+.highlight { color: var(--brand); font-weight: 600; }
+.em { font-weight: 600; color: var(--accent); }
+.mission {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--brand);
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.answer { margin-top: 10px; }
+
+/* ── FAQ ── */
+.faq-container { margin-top: 8px; }
+.faq-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.faq-question {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+  transition: background .15s;
+  user-select: none;
+}
+.faq-question:hover { background: var(--bg); }
+.faq-question img { flex-shrink: 0; border-radius: 4px; }
+.faq-question .fa-chevron-down {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--mute);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.faq-section.active .faq-question { background: var(--accent-soft); }
+.faq-section.active .faq-question .fa-chevron-down { transform: rotate(180deg); color: var(--accent); }
+.faq-answer {
+  padding: 18px 20px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.faq-answer img[src="gpt.png"], .faq-answer img[src="question.png"] {
+  max-width: 36px;
+  margin-bottom: 8px;
+  display: block;
+}
+.faq-answer img:not([src="gpt.png"]):not([src="question.png"]) { max-width: 100%; border-radius: 6px; margin: 6px 0; }
+.faq-answer h3 { font-size: 14px; margin: 14px 0 6px; color: var(--accent); }
+.faq-answer h4 { font-size: 13.5px; margin: 12px 0 4px; color: var(--text); }
+.faq-answer ul, .faq-answer ol { padding-left: 22px; margin: 6px 0; }
+.faq-answer li { margin-bottom: 4px; }
+.faq-answer p { margin-bottom: 8px; }
+.faq-answer b, .faq-answer strong { font-weight: 600; }
+.faq-answer pre { border-radius: 6px; overflow-x: auto; margin: 10px 0; font-size: 13px; }
+.faq-answer code:not([class]) {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+/* answer/reset buttons */
+#answerButton, #resetButton {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  margin: 4px;
+  transition: background .15s;
+}
+#answerButton { background: var(--brand); color: #fff; }
+#answerButton:hover { background: var(--accent); }
+#resetButton { background: var(--border); color: var(--text); }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tabs .tablinks {
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--mute);
+  transition: all .15s;
+}
+.tabs .tablinks:hover { border-color: var(--brand); color: var(--accent); }
+.tabs .tablinks.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+.tab-content { display: none; }
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+.login-guide-container table { width: 100%; border-collapse: collapse; }
+.login-guide-container td {
+  padding: 10px 6px;
+  font-size: 14px;
+  line-height: 1.75;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.login-guide-container img { max-width: 100%; border-radius: 6px; margin: 8px 0; border: 1px solid var(--border); }
+
+/* copy button */
+.copy-btn {
+  padding: 4px 12px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font);
+  transition: background .15s;
+}
+.copy-btn:hover { background: var(--accent); }
+
+/* code block without <pre> wrapper */
+#content #source-code, #content code[id="source-code"] {
+  white-space: pre;
+  display: block;
+  font-family: var(--mono);
+  background: #ffffff;
+  color: #1e1e1e;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+/* <pre> blocks also use white background */
+#content .faq-answer pre[class*="language-"],
+#content pre[class*="language-"] {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb;
+}
+#content code[class*="language-"] {
+  text-shadow: none !important;
+  color: #1e1e1e !important;
+  background: none !important;
+}
+
+/* VSCode Light+ token colors */
+#content .token.comment,
+#content .token.prolog,
+#content .token.doctype,
+#content .token.cdata { color: #008000; font-style: italic; background: none !important; }
+#content .token.keyword,
+#content .token.boolean { color: #0000ff; background: none !important; }
+#content .token.string,
+#content .token.char,
+#content .token.attr-value { color: #a31515; background: none !important; }
+#content .token.number { color: #098658; background: none !important; }
+#content .token.function { color: #795e26; background: none !important; }
+#content .token.class-name { color: #267f99; background: none !important; }
+#content .token.operator { color: #000000; background: none !important; }
+#content .token.punctuation { color: #1e1e1e; background: none !important; }
+#content .token.builtin { color: #0070c1; background: none !important; }
+#content .token.decorator,
+#content .token.annotation { color: #795e26; background: none !important; }
+#content .token.namespace { color: #267f99; background: none !important; }
+
+/* wrapper that holds code block + copy button */
+.code-wrap { position: relative; }
+.code-wrap > .copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 2;
+  padding: 3px 10px;
+  font-size: 11px;
+}
+.code-wrap:hover > .copy-btn { opacity: 1; }
+
+/* general images in content */
+#content img:not([src="gpt.png"]):not([src="question.png"]) {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+/* error box */
+.err-box {
+  background: #fff8e1;
+  border: 1px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #78350f;
+}
+.err-box code { font-family: var(--mono); font-size: 12.5px; background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 3px; }
+.err-box a { color: var(--accent); }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="side-menu">
-        <ul id="menu">
-            <li id="menu1" onclick="toggleNested(this)">1. 시작하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu1_0');">업무자동화</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu1_1');">개발환경 구축하기</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu1_2');">ChatGPT 시작하기</li>
-                </ul>
-            </li>
-            <li id="menu2" onclick="toggleNested(this)">2. 파일 정리하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu2_1');">PDF 파일 생성하기</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu2_2');">파일 월별 정리하기</li>
-                </ul>
-            </li>
-                <li id ="menu3" onclick="toggleNested(this)">3. 파일 분석하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu3_1');">월별 및 연간 데이터 관리</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu3_2');">팬데믹 데이터 병합</li>
-                    <li onclick="event.stopPropagation(); showContent('menu3_3');">상권 분석</li>
-                </ul>
-            </li>
-            
-            <li id="menu4" onclick="toggleNested(this)">4. Streamlit 활용하기
-                <ul class="nested">                    
-                    <li onclick="event.stopPropagation(); showContent('menu4_2');">Streamlit 준비</li>
-                    <li onclick="event.stopPropagation(); showContent('menu4_3');">Streamlit 사용</li>
-                </ul>            
-            </li>
-            <li id="menu5" onclick="toggleNested(this)">5. 워드 다루기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu5_1');">공문 자동생성</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu5_2');">Using Streamlit </li>                        
-                </ul>            
-            </li>
-            <li id="menu6" onclick="toggleNested(this)">6. PDF 정보 추출하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu6_1');">계약 금액 추출</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu6_2');">계약자 정보 추출</li>
-                    <li onclick="event.stopPropagation(); showContent('menu6_3');">Using Streamlit</li>
-                </ul>            
-            </li>
-            <li id="menu7" onclick="toggleNested(this)">7. 이메일 자동화하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu7_0');">Naver SMPT</li> 
-                    <li onclick="event.stopPropagation(); showContent('menu7_1');">07_01.ipynb </li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu7_2');">07_02_streamlit.py</li>
-                    <li onclick="event.stopPropagation(); showContent('menu7_3');">07_03.py</li>
-                    <li onclick="event.stopPropagation(); showContent('menu7_4');">07_04.py</li>
-                </ul>            
-            </li>
-            <li id="menu8" onclick="toggleNested(this)">8. OpenAI API
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu8_1');">OpenAI API 준비</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu8_2');">OpenAI API 사용</li>
-                    <li onclick="event.stopPropagation(); showContent('menu8_4');">Chat Completions</li>
-                    <li onclick="event.stopPropagation(); showContent('menu8_3');">회의록 자동 요약</li>
-                </ul>             
-            </li>
-            <li id="menu9" onclick="toggleNested(this)">9. 메시지 분석과 생성하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu9_1');">광고문구 자동생성</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu9_2');">비지니스 인사이트 도출</li>
-                    <li onclick="event.stopPropagation(); showContent('menu9_3');">마케팅 문구 스타일 변환</li>
-                </ul>
-
-            </li>
-
-            <li id="menu10" onclick="toggleNested(this)">10. LangChain 요약 자동화하기
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu10_1');">LangChain OPENAI</li>                        
-                    <li onclick="event.stopPropagation(); showContent('menu10_2');">Youtube 요약하기</li>
-                    <li onclick="event.stopPropagation(); showContent('menu10_3');">웹사이트 요약하기</li>
-                    <li onclick="event.stopPropagation(); showContent('menu10_4');">PDF 요약하기</li>
-                    
-                </ul>            
-            </li>
-            <li id="menu11" onclick="toggleNested(this)">11. 문서 기반 질문응답 시스템 (RAG) 
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu11_1')">Embedding</li>
-                    <li onclick="event.stopPropagation(); showContent('menu11_2')">PDF기반 응답(ipynb)</li>
-                    <li onclick="event.stopPropagation(); showContent('menu11_4')">PDF기반 응답(py)</li>
-                    <li onclick="event.stopPropagation(); showContent('menu11_3');">Using Streamlit</li>
-                    <li onclick="event.stopPropagation(); showContent('menu11_5');">사내업무 챗봇</li>
-                    <li onclick="event.stopPropagation(); showContent('menu11_6');">사내업무 챗봇(연습문제)</li>
-                </ul>            
-            </li>
-            <li id="menu12" onclick="toggleNested(this)">12. 음성 비서 프로그램
-                <ul class="nested">
-                    <li onclick="event.stopPropagation(); showContent('menu12_1')">문자와 음성 변환</li>
-                    <li onclick="event.stopPropagation(); showContent('menu12_2')">Using Streamlit</li>
-                </ul>            
-            </li>
-
-           <li id="menu9" onclick="event.stopPropagation(); showContent('menu13_1')">13. 참조 사이트</li>
-
-        </ul>
+<div class="wrap">
+  <nav class="side">
+    <div class="nav-top">
+      <h1>ChatGPT 업무 자동화<span>오정임 · purum01@naver.com</span></h1>
     </div>
-    <div class="content" id="content">
-        <img src = "cover.png">
-    </div>
+    <div class="nav-body" id="nav"></div>
+    <p class="nav-owner"><a href="../index.html">← 바로코드</a></p>
+  </nav>
+
+  <main>
+    <div id="content"></div>
+  </main>
 </div>
 
 <script>
-function showContent(menu) {
-    var filePath = menu + ".html"; // 예: 'menu1.html'
-    console.log(filePath)
+/* ── menu data ── */
+const CHAPTERS = [
+  { num:"1", title:"시작하기", items:[
+    { title:"업무자동화",        file:"menu1_0" },
+    { title:"개발환경 구축하기", file:"menu1_1" },
+  ]},
+  { num:"2", title:"파일 정리하기", items:[
+    { title:"PDF 파일 생성하기",  file:"menu2_1" },
+    { title:"파일 월별 정리하기", file:"menu2_2" },
+  ]},
+  { num:"3", title:"파일 분석하기", items:[
+    { title:"월별 및 연간 데이터 관리", file:"menu3_1" },
+    { title:"팬데믹 데이터 병합",       file:"menu3_2" },
+    { title:"상권 분석",               file:"menu3_3" },
+  ]},
+  { num:"4", title:"Streamlit 활용하기", items:[
+    { title:"Streamlit 준비", file:"menu4_2" },
+    { title:"Streamlit 사용", file:"menu4_3" },
+  ]},
+  { num:"5", title:"워드 다루기", items:[
+    { title:"공문 자동생성",   file:"menu5_1" },
+    { title:"Using Streamlit", file:"menu5_2" },
+  ]},
+  { num:"6", title:"PDF 정보 추출하기", items:[
+    { title:"계약 금액 추출",  file:"menu6_1" },
+    { title:"계약자 정보 추출",file:"menu6_2" },
+    { title:"Using Streamlit", file:"menu6_3" },
+  ]},
+  { num:"7", title:"이메일 자동화하기", items:[
+    { title:"Naver SMTP",        file:"menu7_0" },
+    { title:"07_01.ipynb",       file:"menu7_1" },
+    { title:"07_02_streamlit.py",file:"menu7_2" },
+    { title:"07_03.py",          file:"menu7_3" },
+    { title:"07_04.py",          file:"menu7_4" },
+  ]},
+  { num:"8", title:"OpenAI API", items:[
+    { title:"OpenAI API 준비",  file:"menu8_1" },
+    { title:"OpenAI API 사용",  file:"menu8_2" },
+    { title:"role 이해하기",     file:"menu8_4" },
+    { title:"회의록 자동 요약", file:"menu8_3" },
+  ]},
+  { num:"9", title:"메시지 분석과 생성하기", items:[
+    { title:"광고 문구 자동 생성",     file:"menu9_1" },
+    { title:"연설문 분석하기",         file:"menu9_2" },
+    { title:"마케팅 문구 스타일 변환", file:"menu9_3" },
+    { title:"고객 문의 자동 분석",     file:"menu9_4" },
+  ]},
+  { num:"10", title:"LangChain 요약 자동화", items:[
+    { title:"LangChain OPENAI",  file:"menu10_1" },
+    { title:"Youtube 요약하기",  file:"menu10_2" },
+    { title:"웹페이지 요약하기", file:"menu10_3" },
+    { title:"PDF 요약하기",      file:"menu10_4" },
+  ]},
+  { num:"11", title:"문서 기반 질문응답 (RAG)", items:[
+    { title:"RAG란",           file:"menu11_1" },
+    { title:"Embedding",file:"menu11_2" },
+    { title:"RAG 기반 질의응답 시스템",   file:"menu11_3" },
+    { title:"AI 사내규정 질의응답 서비스",     file:"menu11_4" },
+    { title:"AI 연구논문 분석 및 질의응답 서비스",       file:"menu11_5" },
+    
+  ]},
+  { num:"12", title:"음성 비서 프로그램", items:[
+    { title:"TTS/STT 기초",file:"menu12_1" },
+    { title:"음성 비서 프로그램", file:"menu12_2" },
+    { title:"AI Meeting Assistant", file:"menu12_3" },
+  ]},
+  { num:"13", title:"참조 사이트", solo:"menu13_1" },
+];
 
-    // jQuery의 load 메소드를 사용하여 외부 HTML 파일의 내용을 불러옵니다.
-    $("#content").load(filePath, function(response, status, xhr) {
-        if (status == "error") {
-            // 파일 로드 실패 시 처리
-            var msg = "<p>죄송합니다. 오류가 발생했습니다: </p>";
-            msg += "<p>" + xhr.status + " " + xhr.statusText + "</p>";  
-            $("#content").html(msg);
-        }
-    });
+/* ── globals for inline onclick in fetched content ── */
+window.openTab = function(evt, tabName) {
+  document.querySelectorAll('#content .tab-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('#content .tablinks').forEach(el => el.classList.remove('active'));
+  const tab = document.getElementById(tabName);
+  if (tab) tab.style.display = 'block';
+  if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+};
 
-}
+window.copyCode = function(button) {
+  const prev = button.previousElementSibling;
+  const codeEl = prev ? (prev.querySelector('code') || prev) : null;
+  const text = codeEl ? codeEl.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = button.textContent;
+    button.textContent = '복사됨!';
+    setTimeout(() => { button.textContent = orig; }, 1500);
+  }).catch(() => {
+    const range = document.createRange();
+    if (codeEl) range.selectNodeContents(codeEl);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+};
 
-function toggleNested(element) {
-    if (element.children.length > 0) {
-        element.children[0].classList.toggle("active");
+let currentFile = null;
+
+/* ── build sidebar ── */
+function renderNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  CHAPTERS.forEach((ch, ci) => {
+    const div = document.createElement('div');
+    div.className = 'ch-item';
+
+    if (ch.solo) {
+      /* single page, no sub-list */
+      div.innerHTML =
+        `<button class="ch-btn solo" data-file="${ch.solo}">` +
+          `<span class="ch-num">${ch.num}</span>` +
+          `<span>${ch.title}</span>` +
+        `</button>`;
+      div.querySelector('.ch-btn').addEventListener('click', () => loadPage(ch.solo));
+    } else {
+      div.innerHTML =
+        `<button class="ch-btn" data-ci="${ci}">` +
+          `<span class="ch-num">${ch.num}</span>` +
+          `<span>${ch.title}</span>` +
+          `<i class="fas fa-chevron-down ch-arrow"></i>` +
+        `</button>` +
+        `<ul class="sub-list">` +
+          ch.items.map(item =>
+            `<li><a href="#" data-file="${item.file}">${item.title}</a></li>`
+          ).join('') +
+        `</ul>`;
+
+      div.querySelector('.ch-btn').addEventListener('click', () => {
+        const btn = div.querySelector('.ch-btn');
+        const wasOpen = btn.classList.contains('open');
+        nav.querySelectorAll('.ch-btn:not(.solo)').forEach(b => b.classList.remove('open'));
+        if (!wasOpen) btn.classList.add('open');
+      });
+
+      div.querySelectorAll('.sub-list a').forEach(a => {
+        a.addEventListener('click', e => { e.preventDefault(); loadPage(a.dataset.file); });
+      });
     }
+    nav.appendChild(div);
+  });
 }
-</script>
 
+/* ── load content ── */
+function loadPage(file) {
+  if (file === currentFile) return;
+  currentFile = file;
+  try { localStorage.setItem('chatgpt_file', file); } catch(e) {}
+
+  /* mark active */
+  document.querySelectorAll('.sub-list a').forEach(a => {
+    const isOn = a.dataset.file === file;
+    a.classList.toggle('on', isOn);
+    if (isOn) {
+      const btn = a.closest('.ch-item').querySelector('.ch-btn');
+      document.querySelectorAll('.ch-btn:not(.solo)').forEach(b => b.classList.remove('open'));
+      btn.classList.add('open');
+      a.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  });
+  document.querySelectorAll('.ch-btn.solo').forEach(b => {
+    b.classList.toggle('on', b.dataset.file === file);
+  });
+
+  const area = document.getElementById('content');
+  area.innerHTML = '<p style="padding:24px 0;color:var(--mute);font-size:14px;">불러오는 중...</p>';
+
+  fetch(file + '.html', { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(html => {
+      html = html.replace(/<script\b[^>]*src=[^>]*><\/script>/gi, '');
+      html = html.replace(/<link\b[^>]*(prism|font-awesome|googleapis)[^>]*>/gi, '');
+      html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+      area.innerHTML = html;
+
+      /* FAQ accordion */
+      area.querySelectorAll('.faq-question').forEach(q => {
+        const ans = q.nextElementSibling;
+        if (ans && ans.classList.contains('faq-answer')) ans.style.display = 'none';
+        q.addEventListener('click', () => {
+          const answer = q.nextElementSibling;
+          if (!answer) return;
+          const opening = answer.style.display !== 'block';
+          answer.style.display = opening ? 'block' : 'none';
+          q.closest('.faq-section').classList.toggle('active', opening);
+        });
+      });
+
+      /* init tabs */
+      const allTabs = area.querySelectorAll('.tab-content');
+      if (allTabs.length) {
+        allTabs.forEach(t => t.style.display = 'none');
+        allTabs[0].style.display = 'block';
+        const firstBtn = area.querySelector('.tablinks');
+        if (firstBtn) firstBtn.classList.add('active');
+      }
+
+      if (window.Prism) Prism.highlightAllUnder(area);
+
+      /* auto-insert copy buttons on every code block */
+      area.querySelectorAll('pre, [id="source-code"]').forEach(el => {
+        if (el.closest('.code-wrap')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'code-wrap';
+        el.parentNode.insertBefore(wrap, el);
+        wrap.appendChild(el);
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = '복사';
+        btn.addEventListener('click', function() { copyCode(this); });
+        wrap.appendChild(btn);
+      });
+    })
+    .catch(() => {
+      area.innerHTML =
+        `<div class="err-box">` +
+          `<strong>콘텐츠를 불러올 수 없습니다.</strong><br>` +
+          `HTTP 서버를 통해 실행해 주세요.<br><br>` +
+          `<code>python -m http.server 8000</code> 실행 후<br>` +
+          `→ <a href="http://localhost:8000/chatgpt/" target="_blank">http://localhost:8000/chatgpt/</a>` +
+        `</div>`;
+    });
+}
+
+/* ── init ── */
+renderNav();
+try {
+  const saved = localStorage.getItem('chatgpt_file');
+  loadPage(saved || CHAPTERS[0].items[0].file);
+} catch(e) { loadPage(CHAPTERS[0].items[0].file); }
+</script>
 </body>
 </html>

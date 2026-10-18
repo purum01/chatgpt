@@ -1,48 +1,51 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
-
-<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>  
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />  
 <code id="source-code" class="language-python">
 #################  유튜브 동영상 요약하기 ###################
 """
-YoutubeLoader
-https://python.langchain.com/docs/integrations/document_loaders/youtube/
+YouTubeTranscriptApi
+https://github.com/jdepoix/youtube-transcript-api
 
-유튜브 동영상의 자막(Transcript)을 불러와 RecursiveCharacterTextSplitter 로 텍스트를 분할한 후,
+YouTube 동영상의 자막(Transcript)을 YouTubeTranscriptApi로 불러와
+RecursiveCharacterTextSplitter 로 텍스트를 분할한 후,
 LangChain의 요약 체인을 사용하여 동영상 내용을 요약하는 예제.
+
 """
 import os
-from langchain_community.document_loaders import YoutubeLoader
+from youtube_transcript_api import YouTubeTranscriptApi
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
-from langchain_classic.chains.summarize import load_summarize_chain
+from langchain.chains.summarize import load_summarize_chain
 
-URL = "https://www.youtube.com/watch?v=Pn-W41hC764"
-loader = YoutubeLoader.from_youtube_url(URL)
-transcript = loader.load()
+video_id = "Pn-W41hC764"
+transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+text = " ".join([item['text'] for item in transcript_list])
+transcript = [Document(page_content=text, metadata={"source": video_id})]
 
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=0)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000)
 text = text_splitter.split_documents(transcript)
 
-api_key = os.getenv('OPENAI_API_KEY') 
-llm = ChatOpenAI(temperature=0, openai_api_key=api_key, max_tokens=3000, model="gpt-5.4-nano", request_timeout=120)
+api_key = os.getenv('OPENAI_API_KEY')
+llm = ChatOpenAI(api_key=api_key, max_tokens=3000, model="gpt-6-luna", request_timeout=120)
 
-# 각각의 chunck 를 요약하기
+# 각각의 chunk를 요약하기
 prompt = PromptTemplate(
-    template="""Summarize the youtube video whose transcript is provided within backticks  ```{text}``` """, input_variables=["text"]
+    template="Summarize the youtube video whose transcript is provided within backticks ```{text}```"
 )
 
-# 요약된 내용들을 취합하여 다시한번 요약하기
+# 요약된 내용들을 취합하여 다시 한번 요약하기
 combine_prompt = PromptTemplate(
-    template="""Combine all the youtube video transcripts  provided within backticks  ```{text}```
-                Provide a concise summary between 8 to 10 sentences. """, input_variables=["text"]
+    template="""Combine all the youtube video summaries provided within backticks ```{text}```
+                Provide a concise summary between 8 to 10 sentences."""
 )
 
 chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=False, map_prompt=prompt, combine_prompt=combine_prompt)
 result = chain.invoke(text)
 print(result['output_text'])
+
 
 </code>
 <script>

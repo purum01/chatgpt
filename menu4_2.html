@@ -1,45 +1,216 @@
 <style>
-    .hover-text {
-        color: black; 
-        transition: color 0.3s; 
-        font-weight: bold;
-    }
+/* ── 변수 폴백 (index.html 없이도 작동) ── */
+.sl-page {
+  --bg:     #f5f6f7;
+  --sur:    #ffffff;
+  --txt:    #1a1a1a;
+  --mute:   #6b7280;
+  --bdr:    #e5e7eb;
+  --grn:    #03c75a;
+  --dark:   #00893a;
+  --soft:   #eafaf1;
+  --mono:   'IBM Plex Mono', 'Consolas', monospace;
+  --font:   'Noto Sans KR', 'Segoe UI', sans-serif;
+}
+/* index.html 변수가 있으면 덮어씀 */
+.sl-page {
+  --bg:     var(--bg,   #f5f6f7);
+  --sur:    var(--surface, #ffffff);
+  --txt:    var(--text,  #1a1a1a);
+  --mute:   var(--mute,  #6b7280);
+  --bdr:    var(--border, #e5e7eb);
+  --grn:    var(--brand, #03c75a);
+  --dark:   var(--accent, #00893a);
+  --soft:   var(--accent-soft, #eafaf1);
+  --mono:   var(--mono, 'IBM Plex Mono', monospace);
+  --font:   var(--font, 'Noto Sans KR', sans-serif);
+}
 
-    .hover-text:hover {
-        color: blue; 
-    }
-    .text-box {
-        background-color: white; 
-        border: 1px solid #ccc; 
-        padding: 10px; 
-        display: block; 
-        width: 100%;
-        box-sizing: border-box; 
-        }    
+.sl-page {
+  max-width: 720px;
+  font-family: var(--font);
+  padding-bottom: 48px;
+}
+
+/* ── 헤더 ── */
+.sl-header { margin-bottom: 32px; }
+.sl-title {
+  font-size: 22px !important;
+  font-weight: 700;
+  color: var(--txt) !important;
+  margin: 0 0 4px !important;
+  text-align: left !important;
+}
+.sl-sub {
+  font-size: 13.5px;
+  color: var(--mute);
+  margin: 0;
+}
+
+/* ── 섹션 라벨 ── */
+.sl-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+.sl-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bdr);
+}
+
+/* ── 링크 그리드 ── */
+.sl-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+@media (max-width: 520px) { .sl-links { grid-template-columns: 1fr; } }
+
+.sl-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--sur);
+  border: 1px solid var(--bdr);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--txt);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+}
+.sl-links a:hover {
+  border-color: var(--grn);
+  box-shadow: 0 2px 12px rgba(3,199,90,.12);
+  transform: translateY(-1px);
+  color: var(--dark);
+}
+.sl-links a .sl-link-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--grn);
+}
+.sl-links a .sl-link-url {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--mute);
+  font-family: var(--mono);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* ── 명령어 단계 ── */
+.sl-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sl-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 0 14px;
+  align-items: start;
+}
+.sl-step-num {
+  margin-top: 2px;
+  width: 36px;
+  height: 36px;
+  background: var(--soft);
+  border: 1.5px solid var(--grn);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark);
+  flex-shrink: 0;
+}
+.sl-step-body {}
+.sl-step-desc {
+  font-size: 13px;
+  color: var(--mute);
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+.sl-step-code {
+  display: block;
+  background: #1e2230;
+  border-radius: 6px;
+  padding: 11px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #7ee787;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow-x: auto;
+}
 </style>
 
-<h1 class="title">Streamlit 사용</h1>
-<h2>개발 환경 설치</h2>
+<div class="sl-page">
+  <div class="sl-header">
+    <h1 class="sl-title title">Streamlit 준비</h1>
+    <p class="sl-sub">개발 환경 설치 및 Streamlit 기본 실행 방법</p>
+  </div>
 
-    
-    <ol>
-        <li><a href="https://streamlit.io/" class="hover-text" target="_blank">Streamlit 공식 사이트</a></li>
-        <li><a href="https://docs.streamlit.io/"  class="hover-text" target="_blank">Streamlit documentation</a></li>
-        <li><a href="https://docs.streamlit.io/develop/api-reference"  class="hover-text" target="_blank">Streamlit API reference</a></li>
-        <li><a href="https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/" class="hover-text" target="_blank">Streamlit emoji shortcodes</a></li>
+  <p class="sl-label">참고 사이트</p>
+  <div class="sl-links">
+    <a href="https://streamlit.io/" target="_blank">
+      <span class="sl-link-dot"></span>
+      Streamlit 공식 사이트
+      <span class="sl-link-url">streamlit.io</span>
+    </a>
+    <a href="https://docs.streamlit.io/" target="_blank">
+      <span class="sl-link-dot"></span>
+      Documentation
+      <span class="sl-link-url">docs.streamlit.io</span>
+    </a>
+    <a href="https://docs.streamlit.io/develop/api-reference" target="_blank">
+      <span class="sl-link-dot"></span>
+      API Reference
+      <span class="sl-link-url">…/api-reference</span>
+    </a>
+    <a href="https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/" target="_blank">
+      <span class="sl-link-dot"></span>
+      Emoji Shortcodes
+      <span class="sl-link-url">streamlit.app</span>
+    </a>
+  </div>
 
-        <li><b>Streamlit 사용</b></li>
-            
-        Streamlit 라이브러리 설치
-        <li class="text-box">pip install streamlit</li>
-        
-        Streamlit의 기본 데모 애플리케이션이 실행
-        <li class="text-box">streamlit hello</li>
-
-        Streamlit 애플리케이션이 실행
-        <li class="text-box">streamlit run 파일명.py</li>
-            
-    
-    </ol>
-
-
+  <p class="sl-label">설치 및 실행</p>
+  <div class="sl-steps">
+    <div class="sl-step">
+      <div class="sl-step-num">1</div>
+      <div class="sl-step-body">
+        <p class="sl-step-desc">Streamlit 라이브러리 설치</p>
+        <code class="sl-step-code">pip install streamlit</code>
+      </div>
+    </div>
+    <div class="sl-step">
+      <div class="sl-step-num">2</div>
+      <div class="sl-step-body">
+        <p class="sl-step-desc">기본 데모 애플리케이션 실행</p>
+        <code class="sl-step-code">streamlit hello</code>
+      </div>
+    </div>
+    <div class="sl-step">
+      <div class="sl-step-num">3</div>
+      <div class="sl-step-body">
+        <p class="sl-step-desc">Streamlit 앱 실행</p>
+        <code class="sl-step-code">streamlit run 파일명.py</code>
+      </div>
+    </div>
+  </div>
+</div>

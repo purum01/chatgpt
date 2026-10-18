@@ -1,21 +1,16 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
-
 <h1 class="title">이메일 자동화 3</h1>
 <div class="faq-container">
-    
+
     <div class="faq-section">
         <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
+            <img src="gpt.png" width="34px" height="34px">
             STEP7
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="faq-answer">            
-            <code id="source-code" class="language-python">
-"""
+        <div class="faq-answer">
+<pre><code class="language-python">"""
 위 코드를 attachment_file 에 값이 없어도 동작되도록 수정해주세요
-"""         
+"""
 import streamlit as st
 import pandas as pd
 import smtplib
@@ -44,11 +39,14 @@ send_email = st.button("이메일 보내기")
 
 if send_email:
     if email_file and text_file and sender_email and sender_password:
+        server = None
         try:
             # 이메일 목록 읽기
             email_df = pd.read_excel(email_file)
             # 본문 텍스트 읽기
             text_body = str(text_file.getvalue(), 'utf-8')
+            # 첨부 파일은 루프 전에 한 번만 읽기
+            attachment_bytes = attachment_file.read() if attachment_file else None
 
             # SMTP 서버 연결
             server = smtplib.SMTP(smtp_server, smtp_port)
@@ -66,41 +64,27 @@ if send_email:
                 body = text_body.replace('{name}', row['Name'])
                 message.attach(MIMEText(body, "plain", "utf-8"))
 
-                # 첨부 파일 추가 (만약 존재한다면)
-                if attachment_file is not None:
-                    attachment = attachment_file.read()
-                    part = MIMEApplication(attachment, Name="첨부파일")
-                    part['Content-Disposition'] = 'attachment; filename="{}"'.format(attachment_file.name)
+                # 첨부 파일 추가 (업로드된 경우에만)
+                if attachment_bytes:
+                    part = MIMEApplication(attachment_bytes, Name=attachment_file.name)
+                    part['Content-Disposition'] = f'attachment; filename="{attachment_file.name}"'
                     message.attach(part)
 
                 # 이메일 발송
                 server.sendmail(sender_email, row['Email'], message.as_string())
 
             st.success("이메일이 성공적으로 발송되었습니다.")
-            server.quit()
 
         except Exception as e:
             st.error(f"오류가 발생했습니다: {e}")
+        finally:
+            if server:
+                server.quit()
 
     else:
         st.error("모든 필드를 채워주세요!")
-
-            </code>
+</code></pre>
         </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
 </div>
-
-<script src="content.js"></script>
-

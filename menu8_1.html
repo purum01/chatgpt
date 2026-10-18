@@ -1,104 +1,196 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
-
 <style>
-    a {
-        color: #0077cc; 
-        font-size: 18px; 
-        text-decoration: none; 
-        font-weight: bold; 
-    }
-    a:hover {
-        color: #0055aa; 
-        text-decoration: underline; 
-    }
+/* ── API Key 단계 목록 ── */
+.api-steps { list-style: none; padding: 0; margin: 0; }
+.api-steps li {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text, #1a1a1a);
+}
+.api-steps li:last-child { border-bottom: none; }
+.api-step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  background: var(--brand, #03c75a);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.api-step-body { flex: 1; }
+.api-step-body b { color: var(--accent, #00893a); }
+.api-step-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--mute, #6b7280);
+}
+
+/* ── 참조 링크 카드 그리드 ── */
+.ref-section {
+  margin-top: 28px;
+}
+.ref-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mute, #6b7280);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+.ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.ref-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 18px 20px;
+  text-decoration: none;
+  transition: border-color .15s, box-shadow .15s;
+  cursor: pointer;
+}
+.ref-card:hover {
+  border-color: var(--brand, #03c75a);
+  box-shadow: 0 2px 12px rgba(3,199,90,.12);
+}
+.ref-card-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.ref-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+  margin-bottom: 6px;
+}
+.ref-card-desc {
+  font-size: 12.5px;
+  color: var(--mute, #6b7280);
+  line-height: 1.6;
+  flex: 1;
+}
+.ref-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent, #00893a);
+}
+.ref-card:hover .ref-card-link { text-decoration: underline; }
 </style>
 
 <h1 class="title">OpenAI API 준비하기</h1>
 <div class="faq-container">
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            OpenAI API Key 생성
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-<table>
-    <tr><td>1. OpenAI 접속 <a href="https://platform.openai.com/overview" target="_blank">[OpenAI]</a></td></tr>
-    <tr><td><img src="image/01.jpg" width="90%" height="90%"></td></tr>
-    <tr><td>2. 로그인</td></tr>
-    <tr><td><img src="image/02.jpg" width="80%" height="80%"></td></tr>
-    <tr><td>3. API Keys 선택</td></tr>
-    <tr><td><img src="image/03.jpg" width="90%" height="90%"></td></tr>
-    <tr><td>4. Crete new secret key 선택</td></tr>
-    <tr><td><img src="image/04.jpg" width="90%" height="90%"></td></tr>
-    <tr><td>. Crete new secret key 선택</td></tr>
-    <tr><td><img src="image/05.jpg" width="90%" height="90%"></td></tr>
-</table>            
-        </div>
+  <div class="faq-section">
+    <div class="faq-question">
+      <img src="gpt.png" width="34px" height="34px">
+      OpenAI API Key 생성
+      <i class="fas fa-chevron-down"></i>
     </div>
-
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            Pricing
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">            
-            <h1>Visit OpenAI Pricing Page</h1>
-            <p>Check out the pricing details directly at <a href="https://platform.openai.com/docs/pricing" target="_blank">OpenAI Pricing</a>.</p>
-        </div>
+    <div class="faq-answer">
+      <ul class="api-steps">
+        <li>
+          <div class="api-step-num">1</div>
+          <div class="api-step-body">
+            <b>OpenAI Platform 접속</b>
+            <a href="https://platform.openai.com/" target="_blank">platform.openai.com</a> 으로 이동합니다.
+          </div>
+        </li>
+        <li>
+          <div class="api-step-num">2</div>
+          <div class="api-step-body">
+            <b>로그인</b>
+            이메일 계정 또는 Google / Microsoft 계정으로 로그인합니다.
+            계정이 없다면 Sign up으로 신규 가입합니다.
+            <span class="api-step-note">신규 가입 시 전화번호 인증이 필요할 수 있습니다.</span>
+          </div>
+        </li>
+        <li>
+          <div class="api-step-num">3</div>
+          <div class="api-step-body">
+            <b>API keys 페이지 이동</b>
+            좌측 사이드바에서 사용할 <b>프로젝트</b>를 선택한 뒤 <b>API keys</b> 메뉴를 클릭합니다.
+          </div>
+        </li>
+        <li>
+          <div class="api-step-num">4</div>
+          <div class="api-step-body">
+            <b>새 키 생성</b>
+            우측 상단의 <b>Create new secret key</b> 버튼을 클릭합니다.
+            팝업 창에서 키 이름을 입력하고 권한을 선택합니다.
+            <span class="api-step-note">권한: All (전체) 또는 Restricted (기능별 세부 설정)</span>
+          </div>
+        </li>
+        <li>
+          <div class="api-step-num">5</div>
+          <div class="api-step-body">
+            <b>키 복사 및 저장</b>
+            <b>Create secret key</b>를 클릭하면 키가 생성됩니다.
+            화면에 표시된 키를 즉시 복사하여 안전한 곳에 보관하세요.
+            <span class="api-step-note">⚠ 창을 닫으면 키를 다시 확인할 수 없습니다.</span>
+          </div>
+        </li>
+      </ul>
     </div>
-
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            Billing
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">            
-            <h1>Visit OpenAI Billing Page</h1>
-            <p>Check out the billing details directly at <a href="https://platform.openai.com/account/billing/overview" target="_blank">OpenAI Billing</a>.</p>
-        </div>
-    </div>
-
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            Token Counting
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">            
-                <h1>Visit OpenAI Token Counting Page</h1>
-                <p>Check your token count on <a href="https://platform.openai.com/tokenizer" target="_blank">Tokenizer</a>.</p>
-        </div>
-    </div>
-
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            OpenAI Documentation
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">            
-                <h1>Visit OpenAI Documentation & API Page</h1>
-                <p>Check out the ducumentation directly at <a href="https://platform.openai.com/docs/api-reference/introduction" target="_blank">OpenAI Documentation & API</a>.</p>
-        </div>
-    </div>
-    <div class="faq-section">
-        <div class="faq-question">
-            <img src="gpt.png"   width="34px" height="34px" >
-            Compare models
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">            
-                <h1>Compare models</h1>
-                <p>Check out the ducumentation directly at <a href="https://platform.openai.com/docs/models/compare" target="_blank">Compare models</a>.</p>
-        </div>
-    </div>
-
+  </div>
 </div>
 
-<script src="content.js"></script>
+<!-- 참조 링크 카드 그리드 -->
+<div class="ref-section">
+  <p class="ref-section-title">참조 사이트</p>
+  <div class="ref-grid">
 
+    <a class="ref-card" href="https://developers.openai.com/api/docs/pricing" target="_blank">
+      <div class="ref-card-icon">💰</div>
+      <div class="ref-card-title">Pricing</div>
+      <div class="ref-card-desc">모델별 토큰 단가 및 이미지·음성·파인튜닝 요금을 확인합니다.</div>
+      <span class="ref-card-link">바로가기 →</span>
+    </a>
+
+    <a class="ref-card" href="https://platform.openai.com/account/billing/overview" target="_blank">
+      <div class="ref-card-icon">🧾</div>
+      <div class="ref-card-title">Billing</div>
+      <div class="ref-card-desc">크레딧 충전, 사용량 내역, 결제 수단을 관리합니다. 로그인 필요.</div>
+      <span class="ref-card-link">바로가기 →</span>
+    </a>
+
+    <a class="ref-card" href="https://platform.openai.com/tokenizer" target="_blank">
+      <div class="ref-card-icon">🔢</div>
+      <div class="ref-card-title">Tokenizer</div>
+      <div class="ref-card-desc">텍스트를 입력하면 토큰 수를 직접 계산해볼 수 있습니다. 로그인 필요.</div>
+      <span class="ref-card-link">바로가기 →</span>
+    </a>
+
+    <a class="ref-card" href="https://developers.openai.com/api/docs/api-reference/introduction" target="_blank">
+      <div class="ref-card-icon">📄</div>
+      <div class="ref-card-title">API Reference</div>
+      <div class="ref-card-desc">엔드포인트, 요청·응답 스키마, 인증 방법 등 공식 API 레퍼런스 문서입니다.</div>
+      <span class="ref-card-link">바로가기 →</span>
+    </a>
+
+    <a class="ref-card" href="https://developers.openai.com/api/docs/models/compare" target="_blank">
+      <div class="ref-card-icon">⚖️</div>
+      <div class="ref-card-title">Compare Models</div>
+      <div class="ref-card-desc">모델별 성능·가격·컨텍스트 윈도우·속도를 한눈에 비교합니다.</div>
+      <span class="ref-card-link">바로가기 →</span>
+    </a>
+
+  </div>
+</div>

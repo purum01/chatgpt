@@ -1,62 +1,123 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
-<h3>✅ 전체 흐름 요약 </h3>
-<h4>
-📄 PDF 읽기 → 🔎 텍스트 분할 → 🧠 임베딩 생성 → 🗃️ 벡터 DB 저장 → 🤖 질문 → 💬 GPT 응답
-</h4>
-<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>    
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />
 <code id="source-code" class="language-python">
-    #################  PDF 기반 답변하기 ###################
-    from PyPDF2 import PdfReader
-    from langchain_text_splitters import CharacterTextSplitter
-    from langchain_openai import OpenAIEmbeddings
-    from langchain_community.vectorstores import FAISS
-    from langchain_openai import ChatOpenAI
-    from langchain.chains.question_answering import load_qa_chain
-    
-    pdf_reader = PdfReader('Summary of ChatGPTGPT-4 Research.pdf')
-    total_text = ""
-    for page in pdf_reader.pages:
-        total_text += page.extract_text()
-    text_spliter = CharacterTextSplitter(
-        separator='\n',
-        chunk_size = 1000,
-        chunk_overlap = 200,
-        length_function = len,
-    )
-    chunks = text_spliter.split_text(total_text)
-    embedding_model = OpenAIEmbeddings()
-    knowledge_base =   FAISS.from_texts(chunks, embedding_model)
-    doc = knowledge_base.similarity_search("where can I use ChatGPT")
-    llm = ChatOpenAI()
-    chain = load_qa_chain(llm, chain_type="stuff")
-    resp = chain.invoke(input={
-        "input_documents" : doc,
-        "question" : "where can I use ChatGPT"
-    }
-    )
-    print(resp['output_text'])
-    
-        
+import streamlit as st
+
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.chains import RetrievalQA
+
+st.set_page_config(page_title="📘 SmartWorkBot - 문서 챗봇", layout="wide")
+st.title("🤖 SmartWorkBot")
+st.write("사내 업무 텍스트 문서를 기반으로 질문하고 답변을 받아보세요.")
+
+# 예시 질문
+example_questions = [
+    "연차는 며칠 전에 신청해야 하나요?",
+    "재택근무는 얼마나 자주 가능한가요?",
+    "출장비는 언제까지 정산해야 하나요?",
+    "보안 교육은 꼭 들어야 하나요?",
+    "근무 시간은 어떻게 되나요?"
+]
+
+# 세션 상태 초기화
+if "question_input" not in st.session_state:
+    st.session_state.question_input = ""
+
+if "answer" not in st.session_state:
+    st.session_state.answer = ""
+
+# 예시 질문 클릭 시 입력창에 반영
+def set_question(q):
+    st.session_state.question_input = q
+
+# API 키 입력
+openai_api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
+
+# 텍스트 문서 업로드
+uploaded_file = st.file_uploader("📁 사내 텍스트 문서를 업로드하세요 (.txt)", type="txt")
+
+if uploaded_file and openai_api_key:
+    # 파일이 바뀐 경우에만 임베딩 재생성
+    if st.session_state.get("txt_name") != uploaded_file.name:
+        with st.spinner("📚 문서 분석 중입니다..."):
+            raw_text = uploaded_file.read().decode("utf-8")
+
+            text_splitter = CharacterTextSplitter(
+                separator="\n",
+                chunk_size=1000,
+                chunk_overlap=200,
+                length_function=len,
+            )
+            chunks = text_splitter.split_text(raw_text)
+
+            embeddings = OpenAIEmbeddings(api_key=openai_api_key)
+            st.session_state["knowledge_base"] = FAISS.from_texts(chunks, embeddings)
+            st.session_state["txt_name"] = uploaded_file.name
+        st.success("문서 로드 완료!")
+
+    st.markdown("---")
+
+    st.subheader("📌 예시 질문 목록 (클릭하면 자동 입력됩니다)")
+    cols = st.columns(2)
+
+    for i, q in enumerate(example_questions):
+        cols[i % 2].button(
+            f"👉 {q}",
+            key=f"example_{i}",
+            on_click=set_question,
+            args=(q,)
+        )
+
+    # 질문 입력창
+    question = st.text_input("📨 질문을 입력하세요", key="question_input")
+
+    # 질문 실행 버튼
+    if st.button("질문하기"):
+        if not question.strip():
+            st.warning("질문을 입력해주세요.")
+        else:
+            with st.spinner("🧠 답변 생성 중..."):
+                llm = ChatOpenAI(
+                    api_key=openai_api_key,
+                    max_tokens=3000,
+                    model='gpt-6-luna',
+                    request_timeout=120,
+                )
+                qa_chain = RetrievalQA.from_chain_type(
+                    llm=llm,
+                    chain_type="stuff",
+                    retriever=st.session_state["knowledge_base"].as_retriever(),
+                )
+                response = qa_chain.invoke({"query": question})
+                st.session_state.answer = response["result"]
+
+    # 답변 출력
+    if st.session_state.answer:
+        st.markdown("### 💡 답변")
+        st.write(st.session_state.answer)
+
+else:
+    st.info("OpenAI API 키를 입력하고 .txt 문서를 업로드해주세요.")
 </code>
+
 <script>
     function copyCode(elementId) {
-        // 해당 요소의 텍스트를 선택하고 복사합니다.
         var codeElement = document.getElementById(elementId);
         var range = document.createRange();
         range.selectNodeContents(codeElement);
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-    
+
         try {
             document.execCommand('copy');
         } catch (err) {
             alert('복사에 실패했습니다.');
         }
-        
-        // 선택 해제
+
         selection.removeAllRanges();
     }
-    </script>
+</script>

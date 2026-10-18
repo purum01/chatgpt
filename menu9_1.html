@@ -1,86 +1,115 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
+﻿<div class="title">광고 문구 자동 생성</div>
+<div class="subtitle">제품 정보를 입력하면 AI가 광고 문구 5개를 자동으로 생성합니다. 예제 버튼으로 다양한 제품을 실습할 수 있습니다.</div>
 
-<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button>    
-<code id="source-code" class="language-python">
-#################  광고문구 자동 생성하기 ###################
+<div class="code-wrap">
+<pre><code class="language-python">#################  광고문구 자동 생성하기 ###################
 
 import streamlit as st
-import openai
+from openai import OpenAI
+
+EXAMPLES = [
+    {
+        "label": "📱 스마트 안경",
+        "name": "클리어뷰 스마트 안경",
+        "com_name": "옵티테크",
+        "strength": "고해상도 증강 현실 디스플레이, 24시간 배터리 수명, 가벼운 디자인",
+        "tone_manner": "영감을 주고 미래지향적",
+        "keyword": "증강 현실, 일상적인 편안함, 첨단 기술",
+        "value": "혁신, 명확성, 사용자 중심 설계",
+    },
+    {
+        "label": "🌿 친환경 텀블러",
+        "name": "에코퓨어 텀블러",
+        "com_name": "그린라이프",
+        "strength": "100% 재활용 소재, 24시간 보온·보냉, 무독성 인증",
+        "tone_manner": "따뜻하고 친환경적",
+        "keyword": "지구를 위한 선택, 지속 가능성, 일상의 변화",
+        "value": "환경 보호, 건강, 지속 가능한 삶",
+    },
+    {
+        "label": "📚 AI 영어 학습 앱",
+        "name": "스픽업 AI",
+        "com_name": "에듀랩",
+        "strength": "AI 원어민 회화 연습, 발음 교정, 개인 맞춤 커리큘럼",
+        "tone_manner": "자신감을 주고 활기차게",
+        "keyword": "영어 자신감, AI 학습, 언제 어디서나",
+        "value": "성장, 연결, 가능성",
+    },
+]
+
+FIELD_KEYS = ["name", "com_name", "strength", "tone_manner", "keyword", "value"]
 
 
-def askGpt(prompt,apikey):
-    client = openai.OpenAI(api_key = apikey)
-    response = client.chat.completions.create(
-                        model="gpt-5.4-nano",
-                        messages=[{"role": "user", "content": prompt}])
-    gptResponse = response.choices[0].message.content
-    return gptResponse
+def askGpt(prompt, apikey):
+    client = OpenAI(api_key=apikey)
+    response = client.responses.create(
+        model="gpt-6-luna",
+        instructions="당신은 광고 카피라이터 전문가입니다. 간결하고 임팩트 있는 광고 문구를 작성해 주세요.",
+        input=prompt
+    )
+    return response.output_text
 
 
 def main():
     st.set_page_config(page_title="광고 문구 생성 프로그램")
+
     # session state 초기화
     if "OPENAI_API" not in st.session_state:
         st.session_state["OPENAI_API"] = ""
+    for key in FIELD_KEYS:
+        if f"field_{key}" not in st.session_state:
+            st.session_state[f"field_{key}"] = EXAMPLES[0][key]
 
     # 사이드바
     with st.sidebar:
-        # Open AI API 키 입력받기
-        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')
-        
+        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='', type='password')
         if open_apikey:
-            st.session_state["OPENAI_API"] = open_apikey 
+            st.session_state["OPENAI_API"] = open_apikey
         st.markdown('---')
 
-    #메인공간
+    # 메인공간
     st.header("🎸광고 문구 생성 프로그램")
     st.markdown('---')
 
-    col1, col2 =  st.columns(2)
+    # 예제 버튼
+    st.caption("예제 불러오기")
+    cols = st.columns(len(EXAMPLES))
+    for col, example in zip(cols, EXAMPLES):
+        with col:
+            if st.button(example["label"], use_container_width=True):
+                for key in FIELD_KEYS:
+                    st.session_state[f"field_{key}"] = example[key]
+                st.rerun()
+    st.markdown('---')
+
+    col1, col2 = st.columns(2)
     with col1:
-        name = st.text_input("제품명",value="클리어뷰 스마트 안경")
-        strenghth = st.text_input("제품 특징",value="고해상도 증강 현실 디스플레이, 24시간 배터리 수명, 가벼운 디자인")
-        keyword = st.text_input("필수 포함 키워드",value="증강 현실, 일상적인 편안함, 첨단 기술")
-    with col2:  
-        com_name = st.text_input("브랜드 명",value="옵티테크")
-        tone_manner = st.text_input("톤엔 메너",value="영감을 주고 미래지향적")
-        value = st.text_input("브랜드 핵심 가치",value="혁신, 명확성, 사용자 중심 설계")
+        name = st.text_input("제품명", key="field_name")
+        strength = st.text_input("제품 특징", key="field_strength")
+        keyword = st.text_input("필수 포함 키워드", key="field_keyword")
+    with col2:
+        com_name = st.text_input("브랜드 명", key="field_com_name")
+        tone_manner = st.text_input("톤엔 메너", key="field_tone_manner")
+        value = st.text_input("브랜드 핵심 가치", key="field_value")
 
     if st.button("광고 문구 생성"):
-        prompt = f'''
-        아래 내용을 참고해서 1~2줄짜리 광구문구 5개 작성해줘
-        - 제품명: {name}
-        - 브렌드 명: {com_name}
-        - 브렌드 핵심 가치: {value}
-        - 제품 특징: {strenghth}
-        - 톤엔 매너: {tone_manner}
-        - 필수 포함 키워드: {keyword}
-        '''
-        st.info(askGpt(prompt,st.session_state["OPENAI_API"]))
+        if not st.session_state["OPENAI_API"]:
+            st.warning("사이드바에 OpenAI API 키를 입력해 주세요.")
+        else:
+            prompt = f'''
+            아래 내용을 참고해서 1~2줄짜리 광고문구 5개 작성해줘
+            - 제품명: {name}
+            - 브랜드 명: {com_name}
+            - 브랜드 핵심 가치: {value}
+            - 제품 특징: {strength}
+            - 톤엔 매너: {tone_manner}
+            - 필수 포함 키워드: {keyword}
+            '''
+            with st.spinner("광고 문구 생성 중..."):
+                st.info(askGpt(prompt, st.session_state["OPENAI_API"]))
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
-       
-</code>
-<script>
-    function copyCode(elementId) {
-        // 해당 요소의 텍스트를 선택하고 복사합니다.
-        var codeElement = document.getElementById(elementId);
-        var range = document.createRange();
-        range.selectNodeContents(codeElement);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-    
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            alert('복사에 실패했습니다.');
-        }
-        
-        // 선택 해제
-        selection.removeAllRanges();
-    }
-    </script>
+</code></pre>
+</div>

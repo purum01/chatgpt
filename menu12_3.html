@@ -1,0 +1,364 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />
+<code id="source-code" class="language-python">
+# ============================================================
+# AI Meeting Assistant
+# ============================================================
+#
+# [사용 모델]
+#
+# 단계             모델                 역할
+# ------------------------------------------------------------
+# STT             whisper-1            회의 음성 → 텍스트 변환
+# 회의록/브리핑     gpt-6-luna           회의 내용 분석 → 회의록 작성 → 브리핑 문장 생성
+# TTS             gpt-4o-mini-tts      브리핑 텍스트 → 음성 변환
+#
+# ============================================================
+
+
+import os
+import re
+import streamlit as st
+from audiorecorder import audiorecorder
+import openai
+from dotenv import load_dotenv
+
+
+# ============================================================
+# 0. 환경변수 로드
+# ============================================================
+
+load_dotenv()
+DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
+
+# ============================================================
+# 1. STT : 음성 → 텍스트
+# ============================================================
+def STT(audio, apikey):
+
+    filename = "input.mp3"
+    audio.export(filename, format="mp3")
+
+    client = openai.OpenAI(api_key=apikey)
+
+    with open(filename, "rb") as audio_file:
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
+
+    os.remove(filename)
+    return response.text
+
+
+# ============================================================
+# 2. GPT : 회의 내용 → 회의록
+# ============================================================
+def make_meeting_note(transcript, apikey):
+
+    client = openai.OpenAI(api_key=apikey)
+
+    prompt = f"""
+당신은 회사의 전문 회의록 작성 비서입니다.
+
+다음은 회의 내용을 음성 인식한 텍스트입니다.
+
+[회의 내용]
+
+{transcript}
+
+다음 형식으로 회의록을 작성해주세요.
+
+## 회의 요약
+회의 내용을 3문장 이내로 요약하세요.
+
+## 주요 결정사항
+결정된 사항을 bullet point로 정리하세요.
+
+## 할 일 (Action Items)
+담당자, 업무, 기한을 명확하게 정리하세요.
+정보가 없는 경우 "정보 없음"이라고 작성하세요.
+
+## 다음 일정
+다음 회의나 중요한 일정이 있다면 정리하세요.
+
+주의사항:
+- 주어진 내용만 사용하세요.
+- 없는 정보를 추측하지 마세요.
+- 업무에 바로 사용할 수 있도록 간결하게 작성하세요.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-6-luna",
+        messages=[
+            {
+                "role": "system",
+                "content":
+                "당신은 정확하고 간결한 기업용 회의록을 작성하는 업무 비서입니다."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response.choices[0].message.content
+
+
+# ============================================================
+# 3. GPT : 회의록 → 브리핑 문장
+# ============================================================
+def make_briefing(meeting_note, apikey):
+
+    client = openai.OpenAI(api_key=apikey)
+
+    response = client.chat.completions.create(
+        model="gpt-6-luna",
+        messages=[
+            {
+                "role": "system",
+                "content": """
+당신은 회사 임직원을 위한 AI 업무 비서입니다.
+
+회의록에서 가장 중요한 내용을 골라
+자연스러운 한국어 음성 브리핑을 작성하세요.
+
+규칙:
+1. 3~4문장으로 작성하세요.
+2. 중요한 결정사항과 할 일을 우선적으로 알려주세요.
+3. 실제 업무 비서가 보고하는 것처럼 자연스럽게 작성하세요.
+4. 마크다운 문법을 사용하지 마세요.
+5. 별표, 샵, 하이픈 등의 특수기호를 사용하지 마세요.
+6. 제목이나 목록을 만들지 마세요.
+7. 일반적인 한국어 문장으로만 작성하세요.
+"""
+            },
+            {
+                "role": "user",
+                "content": meeting_note
+            }
+        ]
+    )
+
+    return response.choices[0].message.content
+
+
+# ============================================================
+# 4. TTS용 텍스트 정리
+# ============================================================
+def clean_text_for_tts(text):
+    text = text.replace("**", "")
+    text = text.replace("*", "")
+    text = text.replace("#", "")
+    text = re.sub(r'\[(.*?)\]\(.*?\)', r'\1', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
+
+# ============================================================
+# 5. OpenAI TTS : 텍스트 → 음성
+# ============================================================
+def TTS(text, apikey, voice):
+
+    filename = "output.mp3"
+    clean_text = clean_text_for_tts(text)
+
+    client = openai.OpenAI(api_key=apikey)
+
+    with client.audio.speech.with_streaming_response.create(
+        model="gpt-4o-mini-tts",
+        voice=voice,
+        input=clean_text
+    ) as response:
+        response.stream_to_file(filename)
+
+    st.audio(filename, format="audio/mp3", autoplay=True)
+    os.remove(filename)
+
+
+# ============================================================
+# 6. Streamlit 프로그램
+# ============================================================
+def main():
+
+    st.set_page_config(
+        page_title="AI Meeting Assistant",
+        page_icon="🎙️",
+        layout="wide"
+    )
+
+    st.markdown("""
+    <style>
+    .block-container { max-width: 1400px; padding-top: 2rem; padding-bottom: 4rem; }
+    .main-title { font-size: 2.7rem; font-weight: 750; letter-spacing: -1.5px; margin-bottom: 5px; }
+    .sub-title { font-size: 1.05rem; color: #6b7280; margin-bottom: 30px; }
+    .status-box { padding: 13px 18px; border-radius: 10px; background-color: #f0fdf4;
+        border: 1px solid #bbf7d0; color: #166534; font-size: 0.95rem; margin-bottom: 25px; }
+    .info-card { background-color: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px;
+        padding: 20px 24px; margin-bottom: 30px; line-height: 1.7; }
+    .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; }
+    .transcript-box { background-color: #f8fafc; border-left: 4px solid #4f46e5;
+        padding: 18px; border-radius: 8px; line-height: 1.7; margin-top: 15px; }
+    .briefing-box { background-color: #eef2ff; border: 1px solid #c7d2fe;
+        padding: 22px; border-radius: 12px; font-size: 1.03rem; line-height: 1.8; margin-top: 15px; }
+    .stButton > button { border-radius: 8px; font-weight: 600; height: 44px; }
+    .stDownloadButton > button { border-radius: 8px; height: 44px; font-weight: 600; }
+    [data-testid="stSidebar"] { border-right: 1px solid #e5e7eb; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    if "transcript" not in st.session_state:
+        st.session_state["transcript"] = ""
+    if "meeting_note" not in st.session_state:
+        st.session_state["meeting_note"] = ""
+    if "briefing" not in st.session_state:
+        st.session_state["briefing"] = ""
+
+    with st.sidebar:
+        st.markdown("## ⚙️ 설정")
+        st.markdown("---")
+
+        apikey = st.text_input(
+            "OpenAI API Key", type="password",
+            value=DEFAULT_API_KEY, placeholder="sk-..."
+        )
+        if DEFAULT_API_KEY:
+            st.caption("✓ 환경변수에서 API Key를 불러왔습니다.")
+
+        st.markdown("---")
+        st.markdown("### 🔊 AI 음성")
+        voice = st.selectbox("브리핑 음성 선택", ["coral", "alloy", "nova", "sage"])
+        st.caption("브리핑을 읽어줄 AI 음성을 선택합니다.")
+
+        st.markdown("---")
+        st.markdown("### 처리 과정")
+        st.markdown("""
+        🎙️ **회의 녹음** ↓ 📝 **음성 인식** ↓ 🤖 **AI 회의 분석** ↓ 📋 **회의록 생성** ↓ 🔊 **AI 브리핑**
+        """)
+
+        st.markdown("---")
+        if st.button("새 회의 시작", use_container_width=True):
+            st.session_state["transcript"] = ""
+            st.session_state["meeting_note"] = ""
+            st.session_state["briefing"] = ""
+            st.rerun()
+
+    st.markdown('<div class="main-title">AI Meeting Assistant</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="sub-title">
+        회의 내용을 녹음하면 AI가 핵심 내용을 분석하고
+        회의록과 업무 브리핑을 자동으로 생성합니다.
+        </div>""", unsafe_allow_html=True)
+
+    if apikey:
+        st.markdown('<div class="status-box">● AI 서비스를 사용할 준비가 완료되었습니다.</div>',
+                    unsafe_allow_html=True)
+    else:
+        st.warning("OpenAI API Key를 입력해주세요.")
+
+    st.markdown("""
+    <div class="info-card">
+    <b>AI Meeting Assistant</b><br><br>
+    회의 내용을 음성으로 입력하면 AI가 내용을 분석하여
+    회의 요약, 주요 결정사항, 담당 업무 및 다음 일정을 자동으로 정리합니다.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">01. 회의 녹음</div>', unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1], gap="large")
+
+    with col1:
+        st.markdown("#### 🎙️ 회의 내용 녹음")
+        st.caption("버튼을 누르고 회의 내용을 말씀해주세요.")
+        audio = audiorecorder("녹음 시작", "녹음 중...")
+
+        if audio.duration_seconds > 0:
+            st.audio(audio.export().read())
+            if apikey:
+                with st.spinner("음성을 텍스트로 변환하고 있습니다..."):
+                    st.session_state["transcript"] = STT(audio, apikey)
+            else:
+                st.warning("OpenAI API Key를 입력해주세요.")
+
+    with col2:
+        st.markdown("#### 📝 음성 인식 결과")
+        st.caption("Whisper가 음성을 텍스트로 변환한 결과입니다.")
+        if st.session_state["transcript"]:
+            st.markdown(
+                f'<div class="transcript-box">{st.session_state["transcript"]}</div>',
+                unsafe_allow_html=True)
+        else:
+            st.info("회의를 녹음하면 음성 인식 결과가 표시됩니다.")
+
+    if st.session_state["transcript"]:
+        st.markdown("---")
+        st.markdown('<div class="section-title">02. AI 회의 분석</div>', unsafe_allow_html=True)
+
+        if st.button("✨ AI 회의록 생성", type="primary", use_container_width=True):
+            if not apikey:
+                st.warning("OpenAI API Key를 입력해주세요.")
+            else:
+                with st.spinner("AI가 회의 내용을 분석하고 있습니다..."):
+                    st.session_state["meeting_note"] = make_meeting_note(
+                        st.session_state["transcript"], apikey)
+                    st.session_state["briefing"] = ""
+
+    if st.session_state["meeting_note"]:
+        st.markdown("---")
+        st.markdown('<div class="section-title">03. 회의 결과</div>', unsafe_allow_html=True)
+
+        result1, result2 = st.columns([2, 1], gap="large")
+
+        with result1:
+            st.markdown("### 📋 AI 회의록")
+            st.markdown(st.session_state["meeting_note"])
+            st.download_button(
+                "⬇ 회의록 다운로드",
+                data=st.session_state["meeting_note"],
+                file_name="meeting_note.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
+
+        with result2:
+            st.markdown("### 🔊 AI 브리핑")
+            if st.button("▶ 브리핑 생성 및 듣기", use_container_width=True):
+                if not apikey:
+                    st.warning("OpenAI API Key를 입력해주세요.")
+                else:
+                    with st.spinner("AI 브리핑을 준비하고 있습니다..."):
+                        briefing = make_briefing(st.session_state["meeting_note"], apikey)
+                        st.session_state["briefing"] = briefing
+                        TTS(briefing, apikey, voice)
+
+            if st.session_state["briefing"]:
+                st.markdown(
+                    f'<div class="briefing-box">{st.session_state["briefing"]}</div>',
+                    unsafe_allow_html=True)
+
+
+if __name__ == "__main__":
+    main()
+</code>
+
+<script>
+    function copyCode(elementId) {
+        var codeElement = document.getElementById(elementId);
+        var range = document.createRange();
+        range.selectNodeContents(codeElement);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            alert('복사에 실패했습니다.');
+        }
+
+        selection.removeAllRanges();
+    }
+</script>

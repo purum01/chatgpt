@@ -1,4 +1,4 @@
-
+﻿
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />
@@ -82,7 +82,6 @@
     <button class="tablinks" onclick="openTab(event, 'tab6')">질문 6</button>
     <button class="tablinks" onclick="openTab(event, 'tab7')">질문 7</button>
     <button class="tablinks" onclick="openTab(event, 'tab8')">전체질문</button>
-    <button class="tablinks" onclick="openTab(event, 'tab9')">Notebook</button>
 </div>
 
 <div class="tab-container">
@@ -110,7 +109,6 @@ print(df.shape)
 # 3. 데이터의 처음 5개의 행을 보여줌
 print("\n처음 5개의 행:")
 print(df.head())</code></pre>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
     </div>
 
     <div id="tab2" class="tab-content">
@@ -131,7 +129,6 @@ brand_ratio = df['브랜드명'].value_counts(normalize=True) * 100  # 퍼센트
 print("\n브랜드별 빈도수 비율(퍼센트):")
 print(brand_ratio)            
         </code></pre>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
     </div>
     <div id="tab3" class="tab-content">
         <pre><code id="source-code">
@@ -193,7 +190,6 @@ plt.xticks(rotation=0)  # x축 레이블을 가로로 표현
 plt.show()
             
 </code></pre>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
     </div>
 
     <div id="tab4" class="tab-content">
@@ -244,7 +240,6 @@ plt.savefig('brand_store_comparison.png', dpi=300)
 
 # 그래프 출력
 plt.show()</code></pre>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
     </div>
     <div id="tab5" class="tab-content">
     <pre><code id="source-code">
@@ -291,7 +286,6 @@ plt.savefig('baskin_dunkin_locations.png', dpi=300)
 # 그래프 출력
 plt.show()
     </code></pre>
-    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
 </div>
 <div id="tab6" class="tab-content">
     <pre><code id="source-code">
@@ -344,7 +338,6 @@ for idx, row in df_filtered.iterrows():
 seoul_map.save('baskin_dunkin_seoul_map.html')
 # folium에서 png로 바로 저장은 어렵지만, HTML을 통해 브라우저로 확인 가능
     </code></pre>
-    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
 </div>
 <div id="tab7" class="tab-content">
     <pre><code id="source-code">
@@ -394,7 +387,6 @@ seoul_map.save('baskin_dunkin_seoul_map.html')
 
 # folium에서 png로 바로 저장은 어렵지만, HTML을 통해 브라우저로 확인 가능
     </code></pre>
-    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
 </div>
 
 <div id="tab8" class="tab-content">
@@ -443,13 +435,7 @@ seoul_map.save('baskin_dunkin_seoul_map.html')
         
         10. 위의 map에 MarkerCluster를 적용해주세요
     </code></pre>
-    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
 </div>
-    <!-- 나머지 탭 컨텐츠들... 생략 가능 -->
-    <div id="tab9" class="tab-content">   
-        <iframe src="https://nbviewer.org/gist/purum01/ec6166a45e60aee4ff722465fba2ab11" title="외부 페이지"></iframe>             
-    </div>    
-    
 </div>
 
 <script>

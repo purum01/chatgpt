@@ -1,85 +1,45 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />    
-
-<button class="copy-btn" onclick="copyCode('source-code')">📋 Copy</button> 
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet" />
 <code id="source-code" class="language-python">
-#################  Streamlit 사용하여 PDF 기반 답변하기  ###################
+import os
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.chains import RetrievalQA
 
-import streamlit as st
-from PyPDF2 import PdfReader
+pdf_loader = PyPDFLoader('data/Page_Aware_RAG_Five_Variant_Study_2026.pdf')
+documents = pdf_loader.load()
 
-from langchain_openai import ChatOpenAI
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
-from langchain.chains.question_answering import load_qa_chain
+text_splitter = CharacterTextSplitter(
+    separator='\n',
+    chunk_size=1000,
+    chunk_overlap=200,
+    length_function=len,
+)
 
+chunks = text_splitter.split_documents(documents)
 
-##### 메인 함수 #####
-def main():
-    st.set_page_config(page_title="PDF analyzer", layout="wide")
+embedding_model = OpenAIEmbeddings()
+knowledge_base = FAISS.from_documents(chunks, embedding_model)
 
-    # 사이드바
-    with st.sidebar:
+llm = ChatOpenAI(
+    api_key=os.getenv('OPENAI_API_KEY'),
+    max_tokens=3000,
+    model='gpt-6-luna',
+    request_timeout=120,
+)
 
-        # Open AI API 키 입력받기
-        open_apikey = st.text_input(label='OPENAI API 키', placeholder='Enter Your API Key', value='',type='password')
-        
-        # 입력받은 API 키 표시
-        if open_apikey:
-            st.session_state["OPENAI_API"] = open_apikey 
-        st.markdown('---')
-        
-    # 메인공간
-    st.header("PDF 내용 질문 프로그램📜")
-    st.markdown('---')
-    st.subheader("PDF 파일을 넣으세요")
-    # PDF 파일 받기
-    pdf = st.file_uploader(" ", type="pdf")
-    if pdf is not None:
-        # PDF 파일 텍스트 추출하기
-        pdf_reader = PdfReader(pdf)
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-        # 청크 단위로 분할하기
-        text_splitter = CharacterTextSplitter(
-            separator="\n",
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len
-        )
-        chunks = text_splitter.split_text(text)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=knowledge_base.as_retriever()
+)
 
-        st.markdown('---')
-        st.subheader("질문을 입력하세요")
-        # 사용자 질문 받기
-        user_question = st.text_input("Ask a question about your PDF:")
-        if user_question:
-            # 임베딩/ 시멘틱 인덱스
-            embeddings = OpenAIEmbeddings(openai_api_key=st.session_state["OPENAI_API"])
-            knowledge_base = FAISS.from_texts(chunks, embeddings)
-            
-            docs = knowledge_base.similarity_search(user_question)
-
-            # 질문하기
-            llm = ChatOpenAI(temperature=0,
-                    openai_api_key=st.session_state["OPENAI_API"],
-                    max_tokens=2000,
-                    model_name='gpt-4o-mini',
-                    request_timeout=120
-                    )
-            chain = load_qa_chain(llm, chain_type="stuff")
-            response = chain.invoke(input={ "input_documents": docs,   "question": user_question})
-            
-            # 답변결과
-            st.info(response['output_text'])
-            
-
-if __name__=='__main__':
-    main()
-</code>                
+response = qa_chain.invoke({"query": "What are the five retrieval methods compared in this study?"})
+print(response['result'])
+</code>
 
 <script>
     function copyCode(elementId) {
@@ -90,13 +50,13 @@ if __name__=='__main__':
         var selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-    
+
         try {
             document.execCommand('copy');
         } catch (err) {
             alert('복사에 실패했습니다.');
         }
-        
+
         // 선택 해제
         selection.removeAllRanges();
     }

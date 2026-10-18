@@ -1,9 +1,211 @@
-<!-- 첫 번째 이미지: 화면 폭의 80%로 표시 -->
-<img src="image/07_01.png" 
-     alt="이미지 07_01"
-     style="display:block; margin:30px auto; width:80%; height:auto; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+<style>
+.smtp-wrap {
+  max-width: 760px;
+  padding: 4px 0 48px;
+}
 
-<!-- 두 번째 이미지: 원본 크기 유지 -->
-<img src="image/07_02.png" 
-     alt="이미지 07_02"
-     style="display:block; margin:30px auto; width:auto; height:auto; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+/* ── page header ── */
+.smtp-header {
+  margin-bottom: 28px;
+}
+.smtp-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+  margin: 0 0 6px;
+}
+.smtp-header p {
+  font-size: 14px;
+  color: var(--mute, #6b7280);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── info card (server settings) ── */
+.info-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.info-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #00893a);
+}
+.info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #1a1a1a);
+  font-family: var(--mono, monospace);
+}
+.info-note {
+  font-size: 12px;
+  color: var(--mute, #6b7280);
+}
+
+/* ── step section ── */
+.step-section {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.step-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  background: var(--surface, #ffffff);
+}
+.step-badge {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--brand, #03c75a);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.step-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+  margin: 0;
+}
+.step-body {
+  padding: 22px 22px 24px;
+}
+.step-desc {
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--text, #1a1a1a);
+  margin: 0 0 18px;
+}
+.step-img {
+  display: block;
+  width: 80%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin: 0 auto;
+}
+
+/* ── notice box ── */
+.notice-box {
+  background: var(--accent-soft, #eafaf1);
+  border-left: 3px solid var(--brand, #03c75a);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text, #1a1a1a);
+  margin-top: 16px;
+}
+.notice-box strong {
+  color: var(--accent, #00893a);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+</style>
+
+<div class="smtp-wrap">
+
+  <!-- 페이지 헤더 -->
+  <div class="smtp-header">
+    <h1>Naver SMTP 설정</h1>
+    <p>Python 이메일 자동화를 위해 네이버 계정의 SMTP 발송 기능을 활성화하는 방법을 안내합니다.</p>
+  </div>
+
+  <!-- 서버 정보 카드 -->
+  <div class="info-card">
+    <div class="info-item">
+      <span class="info-label">SMTP 서버</span>
+      <span class="info-value">smtp.naver.com</span>
+      <span class="info-note">네이버 메일 발송 서버</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">포트</span>
+      <span class="info-value">587</span>
+      <span class="info-note">TLS 암호화 연결</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">인증 방식</span>
+      <span class="info-value">STARTTLS</span>
+      <span class="info-note">server.starttls()</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">계정</span>
+      <span class="info-value">네이버 ID</span>
+      <span class="info-note">@naver.com 아이디 + 비밀번호</span>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-section">
+    <div class="step-head">
+      <div class="step-badge">1</div>
+      <h2 class="step-title">네이버 메일 설정 — SMTP 발송 허용</h2>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">
+        네이버 메일 웹사이트에서 <b>환경설정 → POP3/IMAP 설정</b> 메뉴를 열고
+        <b>SMTP 사용함</b>을 선택한 뒤 저장합니다.
+        이 설정이 활성화되어야 Python에서 네이버 계정으로 메일을 발송할 수 있습니다.
+      </p>
+      <img class="step-img"
+           src="image/07_01.png"
+           alt="네이버 SMTP 설정 화면 — POP3/IMAP 설정에서 SMTP 사용함 선택">
+      <div class="notice-box">
+        <strong>주의</strong>
+        2단계 인증이 활성화된 계정은 앱 비밀번호를 별도로 발급받아 사용해야 합니다.
+        네이버 보안 설정 → <b>2단계 인증 관리 → 앱 비밀번호 발급</b>에서 생성할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-section">
+    <div class="step-head">
+      <div class="step-badge">2</div>
+      <h2 class="step-title">외부 접속 허용 확인</h2>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">
+        <b>POP3/SMTP 사용함</b>으로 설정한 후 저장 버튼을 클릭합니다.
+        외부 메일 클라이언트나 Python 스크립트에서 이 계정으로 연결할 수 있는지
+        확인하는 화면입니다.
+      </p>
+      <img class="step-img"
+           src="image/07_02.png"
+           alt="네이버 SMTP 외부 접속 허용 확인 화면">
+      <div class="notice-box">
+        <strong>참고</strong>
+        설정 완료 후 Python 코드에서 <code>smtplib.SMTP("smtp.naver.com", 587)</code>로
+        연결하면 정상적으로 메일을 발송할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+</div>
